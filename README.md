@@ -1,4 +1,5 @@
 # CS445 Project 
-# An AVID replica 
+An AVID program replica.  
 
 # TODOs:
+
