@@ -12,6 +12,19 @@ public class Parser {
     private static String[] sequence;
     //this is to parse FASTA files
 
+    //constructor
+    private String input;
+    public Parser() {
+    }
+
+    public static String[] getDescription() {
+        return description;
+    }
+
+    public static String[] getSequence() {
+        return sequence;
+    }
+
     public static void seqGrep(String file) { //taken from UTexas
         List desc= new ArrayList();
         List seq = new ArrayList();

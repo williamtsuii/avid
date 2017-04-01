@@ -1,7 +1,18 @@
+import com.sun.org.apache.xerces.internal.impl.xpath.regex.Match;
+
 /**
  * Created by william on 2017-04-01.
  */
-public class MatchFinding {
+public class MatchFinding extends Parser {
+
+    public MatchFinding(String a) {
+        super();
+    }
+
+    Parser parsedFile = new Parser();
+    String[] description = parsedFile.getDescription();
+    String[] sequence = parsedFile.getSequence();
+
     //TODO: implement data structure for suffix tree
 
     //TODO: concatenating helper func.
