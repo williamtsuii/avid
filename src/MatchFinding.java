@@ -5,7 +5,7 @@ import com.sun.org.apache.xerces.internal.impl.xpath.regex.Match;
  */
 public class MatchFinding extends Parser {
 
-    public MatchFinding(String a) {
+    public MatchFinding() {
         super();
     }
 
