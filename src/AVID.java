@@ -92,12 +92,14 @@ public class AVID {
         for (int k = 0; k < nucleotideSequence.length; k++) {
             if (nucleotideSequence[k] == S1Array[i]) {
                 blosPos1 = k;
+                break;
             }
 
         }
         for (int k = 0; k < nucleotideSequence.length; k++) {
             if (nucleotideSequence[k] == S2Array[j]) {
                 blosPos2 = k;
+                break;
             }
 
         }
@@ -125,12 +127,10 @@ public class AVID {
                 //Case 1
                 if ((fromTopLeft >= fromTop) && (fromTopLeft >= fromLeft)) {
                     F[i][j] = fromTopLeft;
-
                 }
                 //Case 2
                 else if ((fromTop >= fromLeft) && (fromTop >= fromTopLeft)) {
                     F[i][j] = fromTop;
-
                 }
                 //Case 3
                 else if ((fromLeft >= fromTop) && (fromLeft >= fromTopLeft)) {
