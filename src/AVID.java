@@ -117,6 +117,22 @@ public class AVID {
                 double fromLeft = F[i-1][j] - d;
                 double fromTopLeft = F[i-1][j-1] + getBlosScore(S1, S2, i-1, j-1); //need to get blos score
 
+                //Case 1
+                if ((fromTopLeft >= fromTop) && (fromTopLeft >= fromLeft)) {
+                    F[i][j] = fromTopLeft;
+                    break;
+                }
+                //Case 2
+                if ((fromTop >= fromLeft) && (fromTop >= fromLeft)) {
+                    F[i][j] = fromTop;
+                    break;
+                }
+                //Case 3
+                if ((fromLeft >= fromTop) && (fromLeft >= fromTopLeft)) {
+                    F[i][j] = fromLeft;
+                    break;
+                }
+
             }
         }
 
