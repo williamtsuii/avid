@@ -93,10 +93,15 @@ public class AVID {
             if (nucleotideSequence[k] == S1Array[i]) {
                 blosPos1 = k;
             }
+
+        }
+        for (int k = 0; k < nucleotideSequence.length; k++) {
             if (nucleotideSequence[k] == S2Array[j]) {
                 blosPos2 = k;
             }
+
         }
+
 
         blosScore = blos50[blosPos1][blosPos2];
         return blosScore;
@@ -107,8 +112,8 @@ public class AVID {
         initFMAtrix(S1, S2);
 
         //iteration:
-        for (int j = 1; j<S2.length(); j++) {
-            for(int i = 1; i<S1.length(); i++) {
+        for (int j = 1; j<=S2.length(); j++) {
+            for(int i = 1; i<=S1.length(); i++) {
                 //j & i are inverted because going from left to right then top down
 
                 //3 cases: top, left, and top left...
@@ -120,27 +125,43 @@ public class AVID {
                 //Case 1
                 if ((fromTopLeft >= fromTop) && (fromTopLeft >= fromLeft)) {
                     F[i][j] = fromTopLeft;
-                    break;
+
                 }
                 //Case 2
-                if ((fromTop >= fromLeft) && (fromTop >= fromLeft)) {
+                else if ((fromTop >= fromLeft) && (fromTop >= fromTopLeft)) {
                     F[i][j] = fromTop;
-                    break;
+
                 }
                 //Case 3
-                if ((fromLeft >= fromTop) && (fromLeft >= fromTopLeft)) {
+                else if ((fromLeft >= fromTop) && (fromLeft >= fromTopLeft)) {
                     F[i][j] = fromLeft;
-                    break;
+
                 }
 
             }
         }
+        //print matrix
+        for(double[] row : F) {
+            printRow(row);
+        }
 
+    }
 
+    public static void printRow(double[] row) {//for printing matrix
+        for (double i : row) {
+            System.out.print(i);
+            System.out.print("\t");
+        }
+        System.out.println();
     }
 
 
 
     //TODO: If cases to use Anchor Selection / use trivial N&W (without heuristics)
         // use anchors ONLY if anchor set > 50% of length of the sequences aligned
+
+    public static void main(String args[]) {
+        NWAligner("EDKNPIDHNQVSQFLPETFAEQLIR", "IAGLCHDLGHGPFSHMFDGRF");
+    }
+
 }
