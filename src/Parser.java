@@ -13,7 +13,6 @@ public class Parser {
     //this is to parse FASTA files
 
     //constructor
-    private String input;
     public Parser() {
     }
 
