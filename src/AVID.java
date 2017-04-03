@@ -155,13 +155,18 @@ public class AVID {
         System.out.println();
     }
 
+    //TODO: direction matrix for traceback:
+
+
+    //TODO: traceback
+
 
 
     //TODO: If cases to use Anchor Selection / use trivial N&W (without heuristics)
         // use anchors ONLY if anchor set > 50% of length of the sequences aligned
 
     public static void main(String args[]) {
-        NWAligner("EDKNPIDHNQVSQFLPETFAEQLIR", "IAGLCHDLGHGPFSHMFDGRF");
+        NWAligner("EDKNPIDHNQVSQFLPETFAEQLIR", "IAGLCHDLGHGPFSHMFDGRF"); //example
     }
 
 }
