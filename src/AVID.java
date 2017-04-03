@@ -39,7 +39,7 @@ public class AVID {
         int blosPos1 = -1;
         int blosPos2 = -1;
         SM = new SubstitutionMatrix();
-        int blos50[][] = SM.getBlos90();
+        int blos50[][] = SM.getBlos50();
 
         for (int k = 0; k < nucleotideSequence.length; k++) {
             if (nucleotideSequence[k] == S1Array[i]) {
@@ -69,7 +69,6 @@ public class AVID {
         byte[][] pointers = new byte[m+1][n+1];
 
         //iteration:
-
         for (int j = 1; j<=S2.length(); j++) {
             for(int i = 1; i<=S1.length(); i++) {
                 //j & i are inverted because going from left to right then top down
@@ -80,27 +79,21 @@ public class AVID {
                 double fromLeft = F[i - 1][j] - d;
                 double fromTopLeft = F[i - 1][j - 1] + getBlosScore(S1, S2, i - 1, j - 1); //need to get blos score
 
-
-                //Case 1
-                if ((fromLeft >= fromTop) && (fromLeft >= fromTopLeft)) {
-                    F[i][j] = fromLeft;
-                }
                 //Case 2
-                else if ((fromTopLeft >= fromTop) && (fromTopLeft >= fromLeft)) {
+                if ((fromTopLeft >= fromTop) && (fromTopLeft >= fromLeft)) {
                     F[i][j] = fromTopLeft;
+                    pointers[i][j] = 2;
                 }
+                //Case 1
+                else if ((fromLeft >= fromTop) && (fromLeft >= fromTopLeft)) {
+                    F[i][j] = fromLeft;
+                    pointers [i][j] = 1;
+                }
+
                 //Case 3
                 else if ((fromTop >= fromLeft) && (fromTop >= fromTopLeft)) {
                     F[i][j] = fromTop;
-                }
-
-                //new implementation for ptrs:
-                if (F[i][j] == fromTop) {
                     pointers[i][j] = 3;
-                } else if (F[i][j] == fromLeft) {
-                    pointers [i][j] = 1;
-                } else {
-                    pointers[i][j] = 2;
                 }
 
             }
@@ -143,7 +136,6 @@ public class AVID {
             pointers[0][j] = 1;
         }
 
-
         //new iteration:
         int k = 0;
         while (m > 0 || n > 0) {
@@ -165,7 +157,7 @@ public class AVID {
             k++;
         }
 
-
+        System.out.println("\n");
         for(byte[] row : pointers) {
             printPointers(row);
         }
