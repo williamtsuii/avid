@@ -256,6 +256,39 @@ public class MatchFinding extends Parser {
             }
         }
 
+        public void doTraversal(){
+            int currentMax = 0;
+            int index = 0;
+            boolean extra = false;
+            int remembered = 0;
+
+            for (int i = 0; i < Edges.length; i++){
+                Edge e = Edges[i];
+                if ((Edges[i].last_char_index - Edges[i].first_char_index) == 0){
+                       extra = true;
+                       remembered = Edges[i].last_char_index;
+                }
+                if (Nodes[e.end_node].suffix_node == -1){
+                    continue;
+                }
+                if (Math.abs(Edges[i].last_char_index - Edges[i].first_char_index) > currentMax){
+                    currentMax = Math.abs(Edges[i].last_char_index - Edges[i].first_char_index);
+                    index = i;
+                }
+            }
+            System.out.println("BREAK");
+            Edge s = Edges[index];
+            System.out.printf("%5d %5d %3d %5d %6d   ", s.start_node , s.end_node, Nodes[ s.end_node ].suffix_node, s.first_char_index, s.last_char_index);
+            if (extra) {
+                System.out.print(T[remembered]);
+            }
+            int top = s.last_char_index;
+            for ( int l = s.first_char_index ; l <= top; l++)
+                System.out.print( T[ l ]);
+            System.out.println();
+
+        }
+
     }
     //TODO: concatenating helper func.
         // place character 'N' between the two sequences
@@ -295,21 +328,57 @@ public class MatchFinding extends Parser {
 
     public static void main(String args[]) throws IOException {
          String[] testerOne = {"D", "U", "N", "C", "A", "N"};
-         String[] testerTwo = {"T", "R", "U", "O", "N", "G"};
+         String[] testerTwo = {"T", "R", "U", "O", "N", "G", "V", "U", "O", "N"};
 
         System.out.println(concatenateSequences(testerOne, testerTwo));
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 //        System.out.println("Suffix Tree Test\n");
 //        System.out.println("Enter string\n");
 //        String str = br.readLine();
-        String str = concatenateSequences(testerOne, testerTwo);
+//        String str = concatenateSequences(testerOne, testerTwo);
+        String str = "CGGACACACAAAAAGAAAGAAGAATTTTTAGGATCTTTTGTGTGCGAATAACTATGAGGAAGATTAATAA" +
+                "TTTTCCTCTCATTGAAATTTATATCGGAATTTAAATTGAAATTGTTACTGTAATCACACCTGGTTTGTTT" +
+                "GAGGCAGACCCACTGGACGATGCCGACGACGAGACGTCTAGCCTTCCGCCCTTGGAGTCAGATGATGAAG" +
+                "AGCAGGACAGGGACGGAACTTCCAACCGCACACCCACTGTCGCCCCACCGGCTCCCGTATACAGAGATCA" +
+                "CTCTGAAAAGAAAGAACTCCCGCAAGACGAGCAACAAGATCAGGACCACACTCAAGAGGCCAGGAACCAG" +
+                "GTGACAACACCCAGTCAGAACACTCTTTTGAGGAGATGTATCGCCACATTCTAAGATCACAGGGGC" +
+                "CATTTGATGCTGTTTTGTATTATCATATGATGAAGGATGAGCCTGTAGTTTTCAGTACCAGTGATGGCAA" +
+                "AGAGTACACGTATCCAGACTCCCTTGAAGAGGAATATCCACCATGGCTCACTGAAAAAGAGGCTATGAAT" +
+                "GAAGAGAATAGATTTGTTACATTGGATGGTCAACAATTTTATTGGCCGGTGATGAATCACAAGAATAAAT" +
+                "CAGAGCCACATCACAAAGATAGAGAACAACCTAGGTCTCCGAAGGGAGCAAGGGCATCAGTGTGCTCAGT" +
+                "TGAAAATCCCTTGTCAACACCTAGGTCTTATCACATCACAAGTTCCACCTCAGACTCTGCAGGGTGATCC" +
+                "AACAACCTTAATAGAAACATTATTGTTAAAGGACAGCATTAGTTCACAGTCAAACAAGCAAGATTGAGAA" +
+                "TTAACCTTGGTTTTGAACTTGAACACTTAGGGGATTGAAGATTCAACAACCCTAAAGCTTGGGGTAAAAC" +
+                "ATTGGAAATAGTTAAAAGACAAATTGCTCGGAATCACAAAATTCCGAGTATGGATTCTCGTCCTCAGAAA" +
+                "ATCTGGATGGCGCCGAGTCTCACTGAATCTGACATGGATTACCACAAGATCTTGACAGCAGGTCTGTCCG" +
+                "TTCAACAGGGGATTGTTCGGCAAAGAGTCATCCCAGTGTATCAAGTAAACAATCTTGAAGAAATTTGCCA" +
+                "AGTTGTTGATCTGTGTGAGTCAGACTGCGACAGTTCGAGTCTGAAGCGAGAGCTAACAACAGTATCAACA" +
+                "GGTTTAATTTGGATTTGGAAACGAGAGTTTCTGGTCATGAAAAACCCCAAAGAAGAAATCCGGAGGATCC" +
+                "GGATTGTCAATATGCTAAAACGCGGAGTAGCCCGTGTAAACCCCTTGGGAGGTTTGAAGAGGTTGCCAGC" +
+                "CGGACTTCTGCTGGGTCATGGACCCATCAGAATGGTTTTGGCGATACTAGCCTTTTTGAGATTTACAGCA" +
+                "ATCAAGCCATCACTGGGCCTTATCAACAGATGGGGTTCCGTGGGGAAAAAAGAGGCTATGGAAATAATAA" +
+                "AGAAGTTCAAGAAAGATCTTGCTGCCATGTTGAGAATAATCAATGCTAGGAAAGAGAGGAAGAGACGTGG" +
+                "CGCAGACACCAGCATCGGAATCATTGGCCTCCTGCTGACTACAGCCATGGCAGCAGAGATCACTAGACGC" +
+                "GGGAGTGCATACTACATGTACTTGGATAGGAGCGATGCCGGGAAGGCCATTTCGTTTGCTACCACATTGG" +
+                "GAGTGAACAAGTGCCACGTACAGATCATGGACCTCGGGCACATGTGTGACGCCACCATGAGTTATGAGTG" +
+                "CCCTATGCTGGATGAGGGAGTGGAACCAGATGATGTCGATTGCTGGTGCAACACGACATCAACTTGGGTT" +
+                "GTGTACGGAACCTGTCATCACAAAAAAGGTGAGGCACGGCGATCTAGAAGAGCCGTGACGCTCCCTTCTC" +
+                "ACTCTACAAGGAAGTTGCAAACGCGGTCGCAGACCTGGTTAGAATCAAGAGAATACACGAAGCACTTGAT" +
+                "CAAGGTTGAAAACTGGATATTCAGGAACCCCGGGTTTGCGCTAGTGGCCGTTGCCATTGCCTGGCTTTTG" +
+                "GGAAGCTCGACGAGCCAAAAAGTCATATACTTGGTCATGATACTGCTGATTGCCCCGGCATACAGTATCA" +
+                "GGTGCATTGGAGTCAGCAATAGAGACTTCGTGGAGGGCATGTCAGGTGGGACCTGGGTTGATGTTGTCTT" +
+                "GGAACATGGAGGCTGCGTTACCGTGATGGCACAGGACAAGCCAACAGTCGACATAGAGTTGGTCACGACG$";
+//        String str = "sanfoundry";
         /** Construct Suffix Tree **/
         SuffixTree st = new SuffixTree();
         st.T = str.toCharArray();
         st.N = st.T.length - 1;
+        int x = 0;
         for (int i = 0 ; i <= st.N ; i++ )
             st.AddPrefix( st.active, i );
         st.dump_edges( st.N );
+        st.doTraversal();
+
     }
 
 }
