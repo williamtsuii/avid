@@ -143,15 +143,18 @@ public class AVID {
                 reversed1[k] = S1A[m-1];
                 reversed2[k] = '-';
                 m--;
+                len1++;len2++;
             }
             else if (pointers[m][n] == 1) { //left
                 reversed1[k] = '-';
                 reversed2[k] = S2A[n-1];
                 n--;
+                len1++;len2++;
             }
             else { //diagonal
                 reversed1[k] = S1A[m-1];
                 reversed2[k] = S2A[n-1];
+                len1++; len2++;
                 m--; n--;
             }
             k++;
@@ -163,10 +166,20 @@ public class AVID {
         }
 
         String[] alignments = new String[] {
-               String.valueOf(reversed1),
-                String.valueOf(reversed2)
+               String.valueOf(reverse(reversed1, len1)),
+                String.valueOf(reverse(reversed2, len2))
         };
+        reverse(reversed1, len1);
         return alignments; // stub
+    }
+
+    public static char[] reverse(char[] a, int len) {
+        char[] b = new char[len];
+        for (int i = len - 1, j=0; i>=0; i--, j++){
+            b[j] = a[i];
+        }
+
+        return b;
     }
 
     public static void printPointers(byte[] row) {//for printing matrix
