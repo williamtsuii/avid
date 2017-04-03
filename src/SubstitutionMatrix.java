@@ -115,13 +115,60 @@ public class SubstitutionMatrix {
     public SubstitutionMatrix() {
     }
 
+    private static int getIndex(char a) {
+        // check for upper and lowercase characters
+        switch ((String.valueOf(a)).toUpperCase().charAt(0)) {
+            case 'A': return 0;
+            case 'R': return 1;
+            case 'N': return 2;
+            case 'D': return 3;
+            case 'C': return 4;
+            case 'Q': return 5;
+            case 'E': return 6;
+            case 'G': return 7;
+            case 'H': return 8;
+            case 'I': return 9;
+            case 'L': return 10;
+            case 'K': return 11;
+            case 'M': return 12;
+            case 'F': return 13;
+            case 'P': return 14;
+            case 'S': return 15;
+            case 'T': return 16;
+            case 'W': return 17;
+            case 'Y': return 18;
+            case 'V': return 19;
+            case 'B': return 20;
+            case 'J': return 21;
+            case 'Z': return 22;
+            case 'X': return 23;
+            default: throw new InvalidAlphabetException(a, "Invalid amino acid character");
+        }
+    }
+
 
     public static int[][] getBlos50() {
         return blos50;
     }
 
     public static int[][] getBlos90() {
-        return blos50;
+        return blos90;
+    }
+
+    private static int getDistance(int i, int j) {
+        if (i < 0 || i > blos50[0].length) {
+            throw new InvalidAlphabetException("Invalid amino acid character at string1, position " + i);
+        }
+        if (j < 0 || j > blos50[0].length) {
+            throw new InvalidAlphabetException("Invalid amino acid character at string2, position " + j);
+        }
+
+        return blos50[i][j];
+    }
+
+    public static int getDistance(char a1, char a2) {
+        // toUpper
+        return getDistance(getIndex(a1), getIndex(a2));
     }
 
 }
