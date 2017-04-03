@@ -64,7 +64,9 @@ public class AVID {
             {  -5, -5, -5, -5, -5, -5, -5, -5, -5, -5, -5, -5, -5,
                     -5, -5, -5, -5, -5, -5, -5, -5, -5, -5, -5,  1}
     };
-
+    private static String S1T;
+    private static String S2T;
+    private static String[] alignments;
     private AVID() {
         super();
     }
@@ -104,7 +106,6 @@ public class AVID {
 
         }
 
-
         blosScore = blos50[blosPos1][blosPos2];
         return blosScore;
     }
@@ -112,6 +113,10 @@ public class AVID {
     //TODO: N&W Algorithm
     public static void NWAligner(String S1, String S2) {
         initFMAtrix(S1, S2);
+        S1T = S1; S2T = S2;
+        int m = S1.length();
+        int n = S2.length();
+        byte[][] pointers = new byte[m+1][n+1];
 
         //iteration:
         for (int j = 1; j<=S2.length(); j++) {
@@ -120,23 +125,27 @@ public class AVID {
 
                 //3 cases: top, left, and top left...
                 //F[i-1][j-1] == top left; F[i][j-1] == top; F[i-1][j] == left
-                double fromTop = F[i][j-1] - d;
-                double fromLeft = F[i-1][j] - d;
-                double fromTopLeft = F[i-1][j-1] + getBlosScore(S1, S2, i-1, j-1); //need to get blos score
+                double fromTop = F[i][j - 1] - d;
+                double fromLeft = F[i - 1][j] - d;
+                double fromTopLeft = F[i - 1][j - 1] + getBlosScore(S1, S2, i - 1, j - 1); //need to get blos score
 
                 //Case 1
-                if ((fromTopLeft >= fromTop) && (fromTopLeft >= fromLeft)) {
-                    F[i][j] = fromTopLeft;
+                if ((fromLeft >= fromTop) && (fromLeft >= fromTopLeft)) {
+                    F[i][j] = fromLeft;
+                    pointers[i][j] = 1;
                 }
                 //Case 2
-                else if ((fromTop >= fromLeft) && (fromTop >= fromTopLeft)) {
-                    F[i][j] = fromTop;
+                else if ((fromTopLeft >= fromTop) && (fromTopLeft >= fromLeft)) {
+                    F[i][j] = fromTopLeft;
+                    pointers[i][j] = 2;
                 }
                 //Case 3
-                else if ((fromLeft >= fromTop) && (fromLeft >= fromTopLeft)) {
-                    F[i][j] = fromLeft;
-
+                else if ((fromTop >= fromLeft) && (fromTop >= fromTopLeft)) {
+                    F[i][j] = fromTop;
+                    pointers[i][j] = 3;
                 }
+
+
 
             }
         }
@@ -145,6 +154,7 @@ public class AVID {
             printRow(row);
         }
 
+        getAlignment(pointers, n, m);
     }
 
     public static void printRow(double[] row) {//for printing matrix
@@ -155,12 +165,76 @@ public class AVID {
         System.out.println();
     }
 
-    //TODO: direction matrix for traceback:
-
-
     //TODO: traceback
+    public static Object getTraceback(byte[][] pointers, int n, int m) {
+        StringBuffer alignment1Buffer = new StringBuffer();
+        StringBuffer alignment2Buffer = new StringBuffer();
+        char[] S1A = S1T.toCharArray();
+        char[] S2A = S2T.toCharArray();
+        char c1; char c2;
+        int len1 = 0; int len2 = 0;
+        int maxlen = S1A.length + S2A.length;
+        char[] reversed1 = new char[maxlen];
+        char[] reversed2 = new char[maxlen];
 
+        //initialize traceback matrix: up=3; left=1; topleft =2;
+        pointers[0][0] = 0;
+        for (int i = 1; i <= m; i++) {
+            pointers[i][0] = 3;
+        }
+        for (int j = 1; j <= n; j++) {
+            pointers[0][j] = 1;
+        }
 
+        //iteration:
+        boolean stillGoing = true;
+        while (stillGoing) {
+            switch (pointers[m][n]) {
+                case 3: //top
+                    reversed1[len1++] = S1A[--m];
+                    reversed2[len2++] = '-';
+                    break;
+               case 2: //diagonal
+                    c1 = S1A[--m];
+                    c2 = S2A[--n];
+                    reversed1[len1++] = c1;
+                    reversed2[len2++] = c2;
+                    break;
+                case 1: //left
+                    reversed1[len1++] = '-';
+                    reversed2[len2++] = S2A[--n];
+                    break;
+                case 0:
+                    stillGoing = false;
+            }
+        }
+
+        for(byte[] row : pointers) {
+            printPointers(row);
+        }
+
+        String[] alignments = new String[] {
+               String.valueOf(reversed1),
+                String.valueOf(reversed2)
+        };
+        return alignments; // stub
+    }
+
+    public static void printPointers(byte[] row) {//for printing matrix
+        for (byte i : row) {
+            System.out.print(i);
+            System.out.print("\t");
+        }
+        System.out.println();
+    }
+
+    public static String[] getAlignment(byte[][] pointers, int n, int m) {
+        alignments = (String[]) getTraceback(pointers, n, m);
+        for (int i = 0; i < alignments.length; i++) {
+            System.out.println(alignments[i]);
+        }
+        return alignments;
+    }
 
     //TODO: If cases to use Anchor Selection / use trivial N&W (without heuristics)
         // use anchors ONLY if anchor set > 50% of length of the sequences aligned
