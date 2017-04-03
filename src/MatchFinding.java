@@ -17,6 +17,7 @@ public class MatchFinding extends Parser {
         super();
     }
 
+
     //TODO: implement data structure for suffix tree
 
     /** Class Node **/

@@ -1,5 +1,5 @@
 /**
- * Created by caram on 2017-04-03.
+ * Created by Gora on 2017-04-03.
  */
 public class InvalidAlphabetException extends RuntimeException {
 

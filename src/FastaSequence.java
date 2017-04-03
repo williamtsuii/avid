@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by caram on 2017-04-03.
+ * Created by Gora on 2017-04-03.
  */
 public class FastaSequence {
 
