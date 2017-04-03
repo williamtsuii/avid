@@ -296,14 +296,20 @@ public class MatchFinding extends Parser {
 
     public static void main(String args[]) throws IOException {
          String[] testerOne = {"D", "U", "N", "C", "A", "N"};
-         String[] testerTwo = {"T", "R", "U", "O", "N", "G"};
+         String[] testerTwo = {"T", "R", "U", "O", "N", "G", "G"};
 
-        System.out.println(concatenateSequences(testerOne, testerTwo));
+        String FS1 = new FastaSequence("seqs/SHORTZaire.FASTA").getSequence();
+        String FS2 = new FastaSequence("seqs/SHORTZika.FASTA").getSequence();
+        String[] FS1A = FS1.split("");
+        String[] FS2A = FS2.split("");
+
+        System.out.println(concatenateSequences(FS1A, FS2A).concat("$"));
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 //        System.out.println("Suffix Tree Test\n");
 //        System.out.println("Enter string\n");
 //        String str = br.readLine();
-        String str = concatenateSequences(testerOne, testerTwo);
+        String str = concatenateSequences(FS1A, FS2A).concat("$");
+
         /** Construct Suffix Tree **/
         SuffixTree st = new SuffixTree();
         st.T = str.toCharArray();

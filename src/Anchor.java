@@ -37,7 +37,7 @@ public class Anchor {
         //Set? matchSet = MatchFinding.findMatches();
         List<String> matchSet = new ArrayList<String>();
         eliminateNoisyMatches(matchSet);
-
+        return null;
     }
 
     private void eliminateNoisyMatches(List matchSet) {
