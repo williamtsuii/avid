@@ -10,60 +10,7 @@ public class AVID {
     private static double[][] F;
     private static char[] nucleotideSequence = {'A', 'R', 'N', 'D', 'C', 'Q', 'E', 'G', 'H', 'I', 'L', 'K', 'M',
                                                 'F', 'P', 'S', 'T', 'W', 'Y', 'V', 'B', 'J', 'Z', 'X'};
-    private static int[][] blos50 = {
-            /*A,  R,  N,  D,  C,  Q,  E,  G,  H,  I,  L,  K,  M,
-             F,  P,  S,  T,  W,  Y,  V,  B,  J,  Z,  X,  *        */
-    /*A*/    {5, -2, -1, -2, -1, -1, -1,  0, -2, -1, -2, -1, -1,
-            -3, -1,  1,  0, -3, -2,  0, -2, -2, -1, -1, -5},
-    /*R*/   {-2,  7, -1, -2, -4,  1,  0, -3,  0, -4, -3,  3, -2,
-            -3, -3, -1, -1, -3, -1, -3, -1, -3,  0, -1, -5},
-    /*N*/   {-1, -1,  7,  2, -2,  0,  0,  0,  1, -3, -4,  0, -2,
-            -4, -2,  1,  0, -4, -2, -3,  5, -4,  0, -1, -5},
-    /*D*/  {-2, -2,  2,  8, -4,  0,  2, -1, -1, -4, -4, -1, -4,
-            -5, -1,  0, -1, -5, -3, -4,  6, -4,  1, -1, -5},
-    /*C*/  {-1, -4, -2, -4, 13, -3, -3, -3, -3, -2, -2, -3, -2,
-            -2, -4, -1, -1, -5, -3, -1, -3, -2, -3, -1, -5},
-    /*Q*/   {-1,  1,  0,  0, -3,  7,  2, -2,  1, -3, -2,  2,  0,
-            -4, -1,  0, -1, -1, -1, -3,  0, -3,  4, -1, -5},
-    /*E*/   {-1,  0,  0,  2, -3,  2,  6, -3,  0, -4, -3,  1, -2,
-            -3, -1, -1, -1, -3, -2, -3,  1, -3,  5, -1, -5},
-    /*G*/   { 0, -3,  0, -1, -3, -2, -3,  8, -2, -4, -4, -2, -3,
-            -4, -2,  0, -2, -3, -3, -4, -1, -4, -2, -1, -5},
-    /*H*/   {-2,  0,  1, -1, -3,  1,  0, -2, 10, -4, -3,  0, -1,
-            -1, -2, -1, -2, -3,  2, -4,  0, -3,  0, -1, -5},
-    /*I*/  { -1, -4, -3, -4, -2, -3, -4, -4, -4,  5,  2, -3,  2,
-            0, -3, -3, -1, -3, -1,  4, -4,  4, -3, -1, -5},
-    /*L*/   {-2, -3, -4, -4, -2, -2, -3, -4, -3,  2,  5, -3,  3,
-            1, -4, -3, -1, -2, -1,  1, -4,  4, -3, -1, -5},
-    /*K*/   {-1,  3,  0, -1, -3,  2,  1, -2,  0, -3, -3,  6, -2,
-            -4, -1,  0, -1, -3, -2, -3,  0, -3,  1, -1, -5},
-    /*M*/  {-1, -2, -2, -4, -2,  0, -2, -3, -1,  2,  3, -2,  7,
-            0, -3, -2, -1, -1,  0,  1, -3,  2, -1, -1, -5},
-    /*F*/   {-3, -3, -4, -5, -2, -4, -3, -4, -1,  0,  1, -4,  0,
-            8, -4, -3, -2,  1,  4, -1, -4,  1, -4, -1, -5},
-    /*P*/  { -1, -3, -2, -1, -4, -1, -1, -2, -2, -3, -4, -1, -3,
-            -4, 10, -1, -1, -4, -3, -3, -2, -3, -1, -1, -5},
-    /*S*/   { 1, -1,  1,  0, -1,  0, -1,  0, -1, -3, -3,  0, -2,
-            -3, -1,  5,  2, -4, -2, -2,  0, -3,  0, -1, -5},
-    /*T*/   { 0, -1,  0, -1, -1, -1, -1, -2, -2, -1, -1, -1, -1,
-            -2, -1,  2,  5, -3, -2,  0,  0, -1, -1, -1, -5},
-    /*W*/  { -3, -3, -4, -5, -5, -1, -3, -3, -3, -3, -2, -3, -1,
-            1, -4, -4, -3, 15,  2, -3, -5, -2, -2, -1, -5},
-    /*Y*/   {-2, -1, -2, -3, -3, -1, -2, -3,  2, -1, -1, -2,  0,
-            4, -3, -2, -2,  2,  8, -1, -3, -1, -2, -1, -5},
-    /*V*/   { 0, -3, -3, -4, -1, -3, -3, -4, -4,  4,  1, -3,  1,
-            -1, -3, -2,  0, -3, -1,  5, -3,  2, -3, -1, -5},
-    /*B*/   {-2, -1,  5,  6, -3,  0,  1, -1,  0, -4, -4,  0, -3,
-            -4, -2,  0,  0, -5, -3, -3,  6, -4,  1, -1, -5},
-    /*J*/   {-2, -3, -4, -4, -2, -3, -3, -4, -3,  4,  4, -3,  2,
-            1, -3, -3, -1, -2, -1,  2, -4,  4, -3, -1, -5},
-    /*Z*/   {-1,  0,  0,  1, -3,  4,  5, -2,  0, -3, -3,  1, -1,
-            -4, -1,  0, -1, -2, -2, -3,  1, -3,  5, -1, -5},
-    /*X*/   {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-            -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -5},
-            {  -5, -5, -5, -5, -5, -5, -5, -5, -5, -5, -5, -5, -5,
-                    -5, -5, -5, -5, -5, -5, -5, -5, -5, -5, -5,  1}
-    };
+    private static SubstitutionMatrix SM;
     private static String S1T;
     private static String S2T;
     private static String[] alignments;
@@ -83,6 +30,7 @@ public class AVID {
         }
     }
 
+
     //TODO: get blos50 score
     public static double getBlosScore(String S1, String S2, int i, int j) {
         char[] S1Array = S1.toCharArray();
@@ -90,6 +38,8 @@ public class AVID {
         double blosScore;
         int blosPos1 = -1;
         int blosPos2 = -1;
+        SM = new SubstitutionMatrix();
+        int blos50[][] = SM.getBlos90();
 
         for (int k = 0; k < nucleotideSequence.length; k++) {
             if (nucleotideSequence[k] == S1Array[i]) {
@@ -119,6 +69,7 @@ public class AVID {
         byte[][] pointers = new byte[m+1][n+1];
 
         //iteration:
+
         for (int j = 1; j<=S2.length(); j++) {
             for(int i = 1; i<=S1.length(); i++) {
                 //j & i are inverted because going from left to right then top down
@@ -129,26 +80,32 @@ public class AVID {
                 double fromLeft = F[i - 1][j] - d;
                 double fromTopLeft = F[i - 1][j - 1] + getBlosScore(S1, S2, i - 1, j - 1); //need to get blos score
 
+
                 //Case 1
                 if ((fromLeft >= fromTop) && (fromLeft >= fromTopLeft)) {
                     F[i][j] = fromLeft;
-                    pointers[i][j] = 1;
                 }
                 //Case 2
                 else if ((fromTopLeft >= fromTop) && (fromTopLeft >= fromLeft)) {
                     F[i][j] = fromTopLeft;
-                    pointers[i][j] = 2;
                 }
                 //Case 3
                 else if ((fromTop >= fromLeft) && (fromTop >= fromTopLeft)) {
                     F[i][j] = fromTop;
-                    pointers[i][j] = 3;
                 }
 
-
+                //new implementation for ptrs:
+                if (F[i][j] == fromTop) {
+                    pointers[i][j] = 3;
+                } else if (F[i][j] == fromLeft) {
+                    pointers [i][j] = 1;
+                } else {
+                    pointers[i][j] = 2;
+                }
 
             }
         }
+
         //print matrix
         for(double[] row : F) {
             printRow(row);
@@ -186,28 +143,28 @@ public class AVID {
             pointers[0][j] = 1;
         }
 
-        //iteration:
-        boolean stillGoing = true;
-        while (stillGoing) {
-            switch (pointers[m][n]) {
-                case 3: //top
-                    reversed1[len1++] = S1A[--m];
-                    reversed2[len2++] = '-';
-                    break;
-               case 2: //diagonal
-                    c1 = S1A[--m];
-                    c2 = S2A[--n];
-                    reversed1[len1++] = c1;
-                    reversed2[len2++] = c2;
-                    break;
-                case 1: //left
-                    reversed1[len1++] = '-';
-                    reversed2[len2++] = S2A[--n];
-                    break;
-                case 0:
-                    stillGoing = false;
+
+        //new iteration:
+        int k = 0;
+        while (m > 0 || n > 0) {
+            if (pointers[m][n] == 3) { //top
+                reversed1[k] = S1A[m-1];
+                reversed2[k] = '-';
+                m--;
             }
+            else if (pointers[m][n] == 1) { //left
+                reversed1[k] = '-';
+                reversed2[k] = S2A[n-1];
+                n--;
+            }
+            else { //diagonal
+                reversed1[k] = S1A[m-1];
+                reversed2[k] = S2A[n-1];
+                m--; n--;
+            }
+            k++;
         }
+
 
         for(byte[] row : pointers) {
             printPointers(row);
@@ -240,7 +197,7 @@ public class AVID {
         // use anchors ONLY if anchor set > 50% of length of the sequences aligned
 
     public static void main(String args[]) {
-        NWAligner("EDKNPIDHNQVSQFLPETFAEQLIR", "IAGLCHDLGHGPFSHMFDGRF"); //example
+        NWAligner("ACATTGTTG", "AATTTTGAGG"); //example
     }
 
 }
