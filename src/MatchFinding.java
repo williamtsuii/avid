@@ -3,8 +3,13 @@ import com.sun.org.apache.xerces.internal.impl.xpath.regex.Match;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.io.*;
+import java.util.LinkedList;
+import java.util.List;
+
 /**
  * Created by william on 2017-04-01.
  */
@@ -33,8 +38,8 @@ public class MatchFinding extends Parser {
     /** Class Suffix Tree **/
     static class SuffixTree {
 
-        private static final int MAX_LENGTH = 1000;
-        private static final int HASH_TABLE_SIZE = 2179;
+        private static final int MAX_LENGTH = 19000;
+        private static final int HASH_TABLE_SIZE = 31179;
         private char[] T = new char[ MAX_LENGTH ];
         private int N;
         private Edge[] Edges ;
@@ -138,7 +143,7 @@ public class MatchFinding extends Parser {
              **/
             public void Remove()
             {
-                int i = Hash( start_node, T[ first_char_index ] );
+                int i = Math.abs(Hash( start_node, T[ first_char_index ] ));
                 while ( Edges[ i ].start_node != start_node ||
                         Edges[ i ].first_char_index != first_char_index )
                     i = ++i % HASH_TABLE_SIZE;
@@ -256,21 +261,205 @@ public class MatchFinding extends Parser {
             }
         }
 
+//        public void subSequence(){
+//
+//            ArrayList<Edge> listofEdges = new ArrayList<Edge>();
+//            for (int i = 0; i < HASH_TABLE_SIZE; i++){
+//                Edge s = Edges[i];
+//                if (s.start_node == -1){
+//                    continue;
+//                }
+//                listofEdges.add(s);
+//            }
+//            char[] stringToCheck = new char[listofEdges.size()];
+//            int currentLongest = 0;
+//            for (int j = 0; j < listofEdges.size(); j++){
+//                Edge s = listofEdges.get(j);
+//                if (Nodes[s.end_node].suffix_node == -1){
+//                    continue;
+//                }
+//                else {
+//                    int top =  s.last_char_index;
+//                    int count = 0;
+//                    for (int l = s.first_char_index; l <= top; l++) {
+//                        stringToCheck[0] = T[l];
+//                        count++;
+//                    }
+//                    if (stringToCheck.length > currentLongest) {
+//                        currentLongest = stringToCheck.length;
+//                    }
+//
+//                    if (listofEdges.get(j).start_node == listofEdges.get(j+1).end_node){
+//                        if (Nodes[s.end_node].suffix_node == -1){
+//                            continue;
+//                        }
+//                        top = listofEdges.get(j+1).last_char_index;
+//                        for (int y = listofEdges.get(j+1).first_char_index; y <= top; y++){
+//                            stringToCheck[count] = T[y];
+//                        }
+//                    }
+////
+//
+//
+//                }
+//            }
+//
+//        }
+
+        public void subSequence_2(){
+            ArrayList<Edge> listofEdges = new ArrayList<Edge>();
+            for (int i = 0; i < HASH_TABLE_SIZE; i++){
+                Edge s = Edges[i];
+                if (s.start_node == -1){
+                    continue;
+                }
+                listofEdges.add(s);
+            }
+            subSequenceHelper(listofEdges);
+        }
+
+        public String getStringFromEdge(Edge e){
+            StringBuilder sb = new StringBuilder();
+            String returnString;
+            for (int i = e.first_char_index; i <= e.last_char_index; i++){
+                sb.append(T[i]);
+            }
+            returnString = sb.toString();
+            return returnString;
+        }
+
+        // helper function may have to do check first = last, repeat and build the sequences
+
+        public ArrayList<Edge> getIndexTrail(ArrayList<Edge> usefulEdges, ArrayList<Edge> allEdges){
+            ArrayList<Edge> toReturn = new ArrayList<>();
+            String str = "";
+            StringBuilder sb = new StringBuilder();
+            for (Edge e : allEdges){
+                toReturn.add(e);
+            }
+            ArrayList<Edge> toCheck = usefulEdges;
+            if (toCheck.size() > 1) {
+                for (int i = 0; i < toCheck.size(); i++) {
+                    Edge s = toCheck.get(i);
+                    if (s.start_node == toCheck.get(i + 1).start_node) {
+                        if (getStringFromEdge(s).length() > getStringFromEdge(toCheck.get(i+1)).length()){
+                            toCheck.remove(i+1);
+                        }
+                        else toCheck.remove(i);
+                    }
+                }
+            }
+
+            for (int i = 0; i < usefulEdges.size(); i++){
+                Edge s = toCheck.get(i);
+                for (int j = 0; j < toReturn.size(); j++){
+                    if (s.end_node == toReturn.get(j).start_node){
+                        toCheck.add(toReturn.get(j));
+                    }
+                }
+            }
+            return toCheck;
+        }
+
+        public String buildStringFromIndexes(ArrayList<Edge> toCheck){
+            String str = "";
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < toCheck.size(); i++){
+                Edge s = toCheck.get(i);
+                sb.append(getStringFromEdge(s));
+            }
+            str = sb.toString();
+            System.out.println("STRING: " + str);
+            return str;
+        }
+
+        public void subSequenceHelper(ArrayList<Edge> listOfEdges){
+            ArrayList<Edge> newList = new ArrayList<>();
+            for (Edge e : listOfEdges){
+                if (Nodes[e.end_node].suffix_node != -1){
+                    newList.add(e);
+                }
+            }
+            String temp;
+            int current = 0;
+            String longestSoFar = "";
+            String first = "";
+            ArrayList<Edge> listWithSameStartEnd = new ArrayList<>();
+            for (int i = 0; i < newList.size(); i++) {
+                Edge s = newList.get(i);
+                first = getStringFromEdge(s);
+
+                if (getStringFromEdge(s).length() > longestSoFar.length()) {
+                    longestSoFar = getStringFromEdge(s);
+
+                }
+                for (int j = i+1; j < newList.size(); j++) {
+                    if (s.end_node == newList.get(j).start_node) {
+                        listWithSameStartEnd.add(newList.get(j));
+                    }
+                }
+                if (listWithSameStartEnd.size() == 0){
+                    continue;
+                }
+                ArrayList<Edge> keepTrack = getIndexTrail(listWithSameStartEnd, newList);
+                temp = buildStringFromIndexes(keepTrack);
+//                    for (Edge e : keepTrack){
+
+//                        temp = getStringFromEdge(e);
+//                        System.out.println("this is edge" + e + "string" + temp);
+                        if (temp.length() > current) {
+                            current = (longestSoFar.length() + temp.length());
+                            longestSoFar = first + temp;
+                        }
+//                    }
+//                longestSoFar = getStringFromEdge(s) + remember;
+
+                listWithSameStartEnd.clear();
+            }
+                System.out.println(longestSoFar);
+
+//                for (int k = s.first_char_index; k <= s.last_char_index; k++){
+//                    sb.append(T[k]);
+//                }
+//                temp = sb.toString();
+//                if (temp.length() > current){
+//                    current = temp.length();
+//                }
+//                int m = i;
+
+
+
+//                while ((s.end_node == newList.get(m+1).end_node) && ((m+1) <= newList.size())) {
+//                    for (int k = newList.get(m+1).first_char_index; k <= newList.get(m+1).last_char_index; k++){
+//                        sb.append(T[k]);
+//                    }
+//                    temp = sb.toString();
+//
+//                    current = temp.length();
+//                }
+        }
+
         public void doTraversal(){
             int currentMax = 0;
             int index = 0;
             boolean extra = false;
             int remembered = 0;
+            int[] toAdd = new int[Edges.length];
 
             for (int i = 0; i < Edges.length; i++){
                 Edge e = Edges[i];
+
+                if (Nodes[e.end_node].suffix_node == -1){
+                    continue;
+                }
+
+
                 if ((Edges[i].last_char_index - Edges[i].first_char_index) == 0){
                        extra = true;
                        remembered = Edges[i].last_char_index;
                 }
-                if (Nodes[e.end_node].suffix_node == -1){
-                    continue;
-                }
+//                if ((Edges[i].last_char_index > ))
+
                 if (Math.abs(Edges[i].last_char_index - Edges[i].first_char_index) > currentMax){
                     currentMax = Math.abs(Edges[i].last_char_index - Edges[i].first_char_index);
                     index = i;
@@ -288,6 +477,53 @@ public class MatchFinding extends Parser {
             System.out.println();
 
         }
+
+//        public void longestSubstring(String str){
+//            char[] holder = new char[HASH_TABLE_SIZE];
+//            int currentLongest = 0;
+//            int count = 0;
+//            String ans = "";
+//            String temp = "";
+//            char[] tempArray = new char[HASH_TABLE_SIZE];
+////            char[] ans = new char[str.length()];
+//            String finalans = "";
+//            for (int i = 0; i < HASH_TABLE_SIZE; i++){
+//                Edge e = Edges[i];
+//                if (e.start_node == -1){
+//                    continue;
+//                }
+//                int top = e.last_char_index;
+//                for (int x = e.first_char_index; x <= top; x++){
+//                    tempArray[ = new String(T[x]);
+//                }
+//
+//
+//                for (int j = 1; j < HASH_TABLE_SIZE; j++){
+//                    if (e.end_node == Edges[j].start_node) {
+//                        if (Nodes[(Edges[j]).end_node].suffix_node == -1) {
+//                            continue;
+//                        }
+//                        int top = e.last_char_index;
+//                        for (int k = e.first_char_index; k <= top; k++){
+//                            System.out.print(T[k]);
+//                        }
+//                        int top2 = Edges[j].last_char_index;
+//                        for (int l = Edges[j].first_char_index; l <= top2; l++){
+//                            System.out.print(T[l]);
+//                        }
+//                        if (holder.length > currentLongest) {
+//                            currentLongest = holder.length;
+//                        }
+//                    }
+//                }
+//
+//            }
+////            finalans = String.valueOf(holder);
+////            System.out.println("BREAK");
+//            System.out.println();
+//        }
+
+
 
     }
     //TODO: concatenating helper func.
@@ -336,39 +572,13 @@ public class MatchFinding extends Parser {
 //        System.out.println("Enter string\n");
 //        String str = br.readLine();
 //        String str = concatenateSequences(testerOne, testerTwo);
-        String str = "CGGACACACAAAAAGAAAGAAGAATTTTTAGGATCTTTTGTGTGCGAATAACTATGAGGAAGATTAATAA" +
-                "TTTTCCTCTCATTGAAATTTATATCGGAATTTAAATTGAAATTGTTACTGTAATCACACCTGGTTTGTTT" +
-                "GAGGCAGACCCACTGGACGATGCCGACGACGAGACGTCTAGCCTTCCGCCCTTGGAGTCAGATGATGAAG" +
-                "AGCAGGACAGGGACGGAACTTCCAACCGCACACCCACTGTCGCCCCACCGGCTCCCGTATACAGAGATCA" +
-                "CTCTGAAAAGAAAGAACTCCCGCAAGACGAGCAACAAGATCAGGACCACACTCAAGAGGCCAGGAACCAG" +
-                "GTGACAACACCCAGTCAGAACACTCTTTTGAGGAGATGTATCGCCACATTCTAAGATCACAGGGGC" +
-                "CATTTGATGCTGTTTTGTATTATCATATGATGAAGGATGAGCCTGTAGTTTTCAGTACCAGTGATGGCAA" +
-                "AGAGTACACGTATCCAGACTCCCTTGAAGAGGAATATCCACCATGGCTCACTGAAAAAGAGGCTATGAAT" +
-                "GAAGAGAATAGATTTGTTACATTGGATGGTCAACAATTTTATTGGCCGGTGATGAATCACAAGAATAAAT" +
-                "CAGAGCCACATCACAAAGATAGAGAACAACCTAGGTCTCCGAAGGGAGCAAGGGCATCAGTGTGCTCAGT" +
-                "TGAAAATCCCTTGTCAACACCTAGGTCTTATCACATCACAAGTTCCACCTCAGACTCTGCAGGGTGATCC" +
-                "AACAACCTTAATAGAAACATTATTGTTAAAGGACAGCATTAGTTCACAGTCAAACAAGCAAGATTGAGAA" +
-                "TTAACCTTGGTTTTGAACTTGAACACTTAGGGGATTGAAGATTCAACAACCCTAAAGCTTGGGGTAAAAC" +
-                "ATTGGAAATAGTTAAAAGACAAATTGCTCGGAATCACAAAATTCCGAGTATGGATTCTCGTCCTCAGAAA" +
-                "ATCTGGATGGCGCCGAGTCTCACTGAATCTGACATGGATTACCACAAGATCTTGACAGCAGGTCTGTCCG" +
-                "TTCAACAGGGGATTGTTCGGCAAAGAGTCATCCCAGTGTATCAAGTAAACAATCTTGAAGAAATTTGCCA" +
-                "AGTTGTTGATCTGTGTGAGTCAGACTGCGACAGTTCGAGTCTGAAGCGAGAGCTAACAACAGTATCAACA" +
-                "GGTTTAATTTGGATTTGGAAACGAGAGTTTCTGGTCATGAAAAACCCCAAAGAAGAAATCCGGAGGATCC" +
-                "GGATTGTCAATATGCTAAAACGCGGAGTAGCCCGTGTAAACCCCTTGGGAGGTTTGAAGAGGTTGCCAGC" +
-                "CGGACTTCTGCTGGGTCATGGACCCATCAGAATGGTTTTGGCGATACTAGCCTTTTTGAGATTTACAGCA" +
-                "ATCAAGCCATCACTGGGCCTTATCAACAGATGGGGTTCCGTGGGGAAAAAAGAGGCTATGGAAATAATAA" +
-                "AGAAGTTCAAGAAAGATCTTGCTGCCATGTTGAGAATAATCAATGCTAGGAAAGAGAGGAAGAGACGTGG" +
-                "CGCAGACACCAGCATCGGAATCATTGGCCTCCTGCTGACTACAGCCATGGCAGCAGAGATCACTAGACGC" +
-                "GGGAGTGCATACTACATGTACTTGGATAGGAGCGATGCCGGGAAGGCCATTTCGTTTGCTACCACATTGG" +
-                "GAGTGAACAAGTGCCACGTACAGATCATGGACCTCGGGCACATGTGTGACGCCACCATGAGTTATGAGTG" +
-                "CCCTATGCTGGATGAGGGAGTGGAACCAGATGATGTCGATTGCTGGTGCAACACGACATCAACTTGGGTT" +
-                "GTGTACGGAACCTGTCATCACAAAAAAGGTGAGGCACGGCGATCTAGAAGAGCCGTGACGCTCCCTTCTC" +
-                "ACTCTACAAGGAAGTTGCAAACGCGGTCGCAGACCTGGTTAGAATCAAGAGAATACACGAAGCACTTGAT" +
-                "CAAGGTTGAAAACTGGATATTCAGGAACCCCGGGTTTGCGCTAGTGGCCGTTGCCATTGCCTGGCTTTTG" +
-                "GGAAGCTCGACGAGCCAAAAAGTCATATACTTGGTCATGATACTGCTGATTGCCCCGGCATACAGTATCA" +
-                "GGTGCATTGGAGTCAGCAATAGAGACTTCGTGGAGGGCATGTCAGGTGGGACCTGGGTTGATGTTGTCTT" +
-                "GGAACATGGAGGCTGCGTTACCGTGATGGCACAGGACAAGCCAACAGTCGACATAGAGTTGGTCACGACG$";
-//        String str = "sanfoundry";
+//        String str = "GATTAGA$";
+        String str = "pqrpqpqabab$";
+//        String str = "ABABABA$";
+//        String str = "banana$";
+//        String str = "GEEKSFORGEEKS$";
+//        String str = "ATCGATCGA$";
+//        String str = "ACTGGTAGATCAGGTA$";
         /** Construct Suffix Tree **/
         SuffixTree st = new SuffixTree();
         st.T = str.toCharArray();
@@ -377,7 +587,7 @@ public class MatchFinding extends Parser {
         for (int i = 0 ; i <= st.N ; i++ )
             st.AddPrefix( st.active, i );
         st.dump_edges( st.N );
-        st.doTraversal();
+        st.subSequence_2();
 
     }
 
