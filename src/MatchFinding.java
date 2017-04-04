@@ -34,8 +34,8 @@ public class MatchFinding extends Parser {
     /** Class Suffix Tree **/
     static class SuffixTree {
 
-        private static final int MAX_LENGTH = 1000;
-        private static final int HASH_TABLE_SIZE = 2179;
+        private static final int MAX_LENGTH = 50000;
+        private static final int HASH_TABLE_SIZE = 50000;
         private char[] T = new char[ MAX_LENGTH ];
         private int N;
         private Edge[] Edges ;
@@ -139,7 +139,7 @@ public class MatchFinding extends Parser {
              **/
             public void Remove()
             {
-                int i = Hash( start_node, T[ first_char_index ] );
+                int i = Math.abs(Hash( start_node, T[ first_char_index ] ));
                 while ( Edges[ i ].start_node != start_node ||
                         Edges[ i ].first_char_index != first_char_index )
                     i = ++i % HASH_TABLE_SIZE;
@@ -239,21 +239,40 @@ public class MatchFinding extends Parser {
         }
         /** Function to print all contents and details of suffix tree **/
         public void dump_edges(int current_n ){
-            System.out.println(" Start  End  Suf  First Last  String\n");
-            for ( int j = 0 ; j < HASH_TABLE_SIZE ; j++ )
-            {
-                Edge s = Edges[j];
-                if ( s.start_node == -1 )
-                    continue;
-                System.out.printf("%5d %5d %3d %5d %6d   ", s.start_node , s.end_node, Nodes[ s.end_node ].suffix_node, s.first_char_index, s.last_char_index);
-                int top;
-                if ( current_n > s.last_char_index )
-                    top = s.last_char_index;
-                else
-                    top = current_n;
-                for ( int l = s.first_char_index ; l <= top; l++)
-                    System.out.print( T[ l ]);
-                System.out.println();
+            BufferedWriter bw = null;
+            FileWriter fw = null;
+            String FILENAME = "out/suffix.txt";
+            try {
+                fw = new FileWriter(FILENAME);
+                bw = new BufferedWriter(fw);
+
+                for ( int j = 0 ; j < HASH_TABLE_SIZE ; j++ )
+                {
+                    Edge s = Edges[j];
+                    if ( s.start_node == -1 )
+                        continue;
+                    bw.write(String.format("%5d %5d %3d %5d %6d   ", s.start_node , s.end_node, Nodes[ s.end_node ].suffix_node, s.first_char_index, s.last_char_index));
+                    int top;
+                    if ( current_n > s.last_char_index )
+                        top = s.last_char_index;
+                    else
+                        top = current_n;
+                    for ( int l = s.first_char_index ; l <= top; l++) {
+                        bw.write(T[l]);
+                    } bw.write("\n");
+                }
+                System.out.println("Done");
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    if (bw != null)
+                        bw.close();
+                    if (fw != null)
+                        fw.close();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
             }
         }
 
@@ -309,7 +328,6 @@ public class MatchFinding extends Parser {
 //        System.out.println("Enter string\n");
 //        String str = br.readLine();
         String str = concatenateSequences(FS1A, FS2A).concat("$");
-
         /** Construct Suffix Tree **/
         SuffixTree st = new SuffixTree();
         st.T = str.toCharArray();
