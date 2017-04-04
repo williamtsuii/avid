@@ -1,3 +1,5 @@
+
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -33,20 +35,31 @@ public class Anchor {
         s2 = sequence2;
     }
 
-    public Anchor anchorSelection() {
+    public Anchor selectAnchors() {
         //Set? matchSet = MatchFinding.findMatches();
-        List<String> matchSet = new ArrayList<String>();
+        List<String> matchSet = new ArrayList<>();
         eliminateNoisyMatches(matchSet);
         return null;
     }
 
-    private void eliminateNoisyMatches(List matchSet) {
-        int longestMatchLength;
+    private static List eliminateNoisyMatches(List matchSet) {
+        int longestMatchLength = 0;
 
         for (int i = 0; i < matchSet.size(); i++) {
-            matchSet.get(i);
-            //get length of string
+            int compareTo = matchSet.get(i).toString().length();
+            if (compareTo > longestMatchLength) {
+                longestMatchLength = compareTo;
+            }
         }
+
+        for (int i = 0; i < matchSet.size(); i++) {
+            if (matchSet.get(i).toString().length() < longestMatchLength) {
+                matchSet.remove(i);
+            }
+        }
+        return matchSet;
+        // TODO: fix bug
+
     }
 
     public void anchorSequences(String s) {
@@ -54,6 +67,11 @@ public class Anchor {
     }
 
     public static void main(String[] args) {
-
+        List<String> matchSet = new ArrayList<>();
+        matchSet.add("hello");
+        matchSet.add("you");
+        matchSet.add("are");
+        matchSet.add("stupid");
+        System.out.println(eliminateNoisyMatches(matchSet));
     }
 }
