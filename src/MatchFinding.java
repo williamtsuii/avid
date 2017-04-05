@@ -15,6 +15,8 @@ import java.util.List;
  */
 public class MatchFinding extends Parser {
 
+    String FS1;
+    String FS2;
     Parser parsedFile = new Parser();
     String[] description = parsedFile.getDescription();
     String[] sequence = parsedFile.getSequence();
@@ -40,8 +42,8 @@ public class MatchFinding extends Parser {
     static class SuffixTree {
 
 
-        private static final int MAX_LENGTH = 19000;
-        private static final int HASH_TABLE_SIZE = 31179;
+        private static final int MAX_LENGTH = 50000;
+        private static final int HASH_TABLE_SIZE = 50000;
 
         private char[] T = new char[ MAX_LENGTH ];
         private int N;
@@ -49,6 +51,10 @@ public class MatchFinding extends Parser {
         private Node[] Nodes ;
         private Suffix active;
         String longestString = "";
+        MatchFinding MF = new MatchFinding();
+        String FS1;
+        String FS2;
+        ArrayList<String> ListOfSubseqs = new ArrayList<>();
         /** Class Suffix **/
         class Suffix
         {
@@ -330,6 +336,7 @@ public class MatchFinding extends Parser {
 //        }
 
         public void subSequence_2(){
+            long startTime = System.currentTimeMillis();
             ArrayList<Edge> listofEdges = new ArrayList<Edge>();
             for (int i = 0; i < HASH_TABLE_SIZE; i++){
                 Edge s = Edges[i];
@@ -339,6 +346,8 @@ public class MatchFinding extends Parser {
                 listofEdges.add(s);
             }
             subSequenceHelper(listofEdges);
+            long endTime = System.currentTimeMillis();
+            System.out.println("TIME:" + (endTime - startTime) + "ms");
         }
 
         public String getStringFromEdge(Edge e){
@@ -416,11 +425,15 @@ public class MatchFinding extends Parser {
                 }
             }
             for (int i = 0; i < listWithSameStartEnd.size(); i++){
-                longestString = (findLongest(followTheRabbitHole(listWithSameStartEnd.get(i), allEdges)));
-                tempString = getStringFromEdge(s).concat(longestString);
-                if (tempString.length() > builtString.length()){
-                    builtString = tempString;
-                    currentMax = builtString.length();
+                String tempLongestString = (findLongest(followTheRabbitHole(listWithSameStartEnd.get(i), allEdges)));
+                if (FS1.contains(tempLongestString) && FS2.contains(tempLongestString)) {
+                    longestString = (findLongest(followTheRabbitHole(listWithSameStartEnd.get(i), allEdges)));
+                    tempString = getStringFromEdge(s).concat(longestString);
+                    ListOfSubseqs.add(tempString);
+                    if (tempString.length() > builtString.length()) {
+                        builtString = tempString;
+                        currentMax = builtString.length();
+                    }
                 }
             }
             longestString = "";
@@ -465,9 +478,11 @@ public class MatchFinding extends Parser {
 //                ArrayList<Edge> keepTrack = getIndexTrail(listWithSameStartEnd, newList);
 //                temp = buildStringFromIndexes(keepTrack);
                 temp = followTheRabbitHole(s, newList);
-                if (temp.length() > longestSoFar.length()){
-                    longestSoFar = temp;
-                }
+
+
+                    if (temp.length() > longestSoFar.length()) {
+                        longestSoFar = temp;
+                    }
 //                    for (Edge e : keepTrack){
 
 //                        temp = getStringFromEdge(e);
@@ -628,11 +643,14 @@ public class MatchFinding extends Parser {
     //TODO: maximal matches function
 
     public static void main(String args[]) throws IOException {
+         MatchFinding MF = new MatchFinding();
+         SuffixTree SF = new SuffixTree();
          String[] testerOne = {"D", "U", "N", "C", "A", "N"};
          String[] testerTwo = {"T", "R", "U", "O", "N", "G", "G"};
 
         String FS1 = new FastaSequence("seqs/SHORTZaire.FASTA").getSequence();
         String FS2 = new FastaSequence("seqs/SHORTZika.FASTA").getSequence();
+
         String[] FS1A = FS1.split("");
         String[] FS2A = FS2.split("");
 
@@ -642,7 +660,7 @@ public class MatchFinding extends Parser {
 //        System.out.println("Enter string\n");
 //        String str = br.readLine();
 //        String str = concatenateSequences(testerOne, testerTwo);
-        String str = "GATTAGA$";
+//        String str = "GATTAGA$";
 //        String str = "pqrpqpqabab$";
 //        String str = "ABABABA$";
 //        String str = "banana$";
@@ -651,9 +669,12 @@ public class MatchFinding extends Parser {
 //        String str = "ACTGGTAGATCAGGTA$";
 //        String str = "ACTGTAACTGTAACT$";
         String str = concatenateSequences(FS1A, FS2A).concat("$");
+//        String str = "ACTGTAACTGTAAAGCGATACTGATCACTGTCAGTGTGAAAAGTCATCATATGATAAAAGGTGACTACTAGTACTATAAAACT$";
 
         /** Construct Suffix Tree **/
         SuffixTree st = new SuffixTree();
+        st.FS1 = FS1;
+        st.FS2 = FS2;
         st.T = str.toCharArray();
         st.N = st.T.length - 1;
         int x = 0;
@@ -662,6 +683,7 @@ public class MatchFinding extends Parser {
         st.dump_edges( st.N );
         st.subSequence_2();
 
+        System.out.println(st.ListOfSubseqs.toString());
     }
 
 }
