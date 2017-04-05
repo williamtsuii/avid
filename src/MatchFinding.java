@@ -22,6 +22,7 @@ public class MatchFinding extends Parser {
         super();
     }
 
+
     //TODO: implement data structure for suffix tree
 
     /** Class Node **/
@@ -38,8 +39,10 @@ public class MatchFinding extends Parser {
     /** Class Suffix Tree **/
     static class SuffixTree {
 
+
         private static final int MAX_LENGTH = 19000;
         private static final int HASH_TABLE_SIZE = 31179;
+
         private char[] T = new char[ MAX_LENGTH ];
         private int N;
         private Edge[] Edges ;
@@ -244,21 +247,40 @@ public class MatchFinding extends Parser {
         }
         /** Function to print all contents and details of suffix tree **/
         public void dump_edges(int current_n ){
-            System.out.println(" Start  End  Suf  First Last  String\n");
-            for ( int j = 0 ; j < HASH_TABLE_SIZE ; j++ )
-            {
-                Edge s = Edges[j];
-                if ( s.start_node == -1 )
-                    continue;
-                System.out.printf("%5d %5d %3d %5d %6d   ", s.start_node , s.end_node, Nodes[ s.end_node ].suffix_node, s.first_char_index, s.last_char_index);
-                int top;
-                if ( current_n > s.last_char_index )
-                    top = s.last_char_index;
-                else
-                    top = current_n;
-                for ( int l = s.first_char_index ; l <= top; l++)
-                    System.out.print( T[ l ]);
-                System.out.println();
+            BufferedWriter bw = null;
+            FileWriter fw = null;
+            String FILENAME = "out/suffix.txt";
+            try {
+                fw = new FileWriter(FILENAME);
+                bw = new BufferedWriter(fw);
+
+                for ( int j = 0 ; j < HASH_TABLE_SIZE ; j++ )
+                {
+                    Edge s = Edges[j];
+                    if ( s.start_node == -1 )
+                        continue;
+                    bw.write(String.format("%5d %5d %3d %5d %6d   ", s.start_node , s.end_node, Nodes[ s.end_node ].suffix_node, s.first_char_index, s.last_char_index));
+                    int top;
+                    if ( current_n > s.last_char_index )
+                        top = s.last_char_index;
+                    else
+                        top = current_n;
+                    for ( int l = s.first_char_index ; l <= top; l++) {
+                        bw.write(T[l]);
+                    } bw.write("\n");
+                }
+                System.out.println("Done");
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    if (bw != null)
+                        bw.close();
+                    if (fw != null)
+                        fw.close();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
             }
         }
 
@@ -607,9 +629,14 @@ public class MatchFinding extends Parser {
 
     public static void main(String args[]) throws IOException {
          String[] testerOne = {"D", "U", "N", "C", "A", "N"};
-         String[] testerTwo = {"T", "R", "U", "O", "N", "G", "V", "U", "O", "N"};
+         String[] testerTwo = {"T", "R", "U", "O", "N", "G", "G"};
 
-        System.out.println(concatenateSequences(testerOne, testerTwo));
+        String FS1 = new FastaSequence("seqs/SHORTZaire.FASTA").getSequence();
+        String FS2 = new FastaSequence("seqs/SHORTZika.FASTA").getSequence();
+        String[] FS1A = FS1.split("");
+        String[] FS2A = FS2.split("");
+
+        System.out.println(concatenateSequences(FS1A, FS2A).concat("$"));
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 //        System.out.println("Suffix Tree Test\n");
 //        System.out.println("Enter string\n");
@@ -623,6 +650,8 @@ public class MatchFinding extends Parser {
 //        String str = "ATCGATCGA$";
 //        String str = "ACTGGTAGATCAGGTA$";
 //        String str = "ACTGTAACTGTAACT$";
+        String str = concatenateSequences(FS1A, FS2A).concat("$");
+
         /** Construct Suffix Tree **/
         SuffixTree st = new SuffixTree();
         st.T = str.toCharArray();

@@ -23,6 +23,7 @@ class SuffixTree {
     private Edge[] Edges ;
     private Node[] Nodes ;
     private Suffix active;
+
     /** Class Suffix **/
     class Suffix
     {
