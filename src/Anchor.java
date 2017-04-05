@@ -20,9 +20,10 @@ public class Anchor {
     int score;
     // match is variable
 
-    public Anchor(int sequence1, int sequence2) {
+    public Anchor(int sequence1, int sequence2, int s1Start, int s2Start, int score) {
         s1 = sequence1;
         s2 = sequence2;
+
     }
 
 
@@ -33,8 +34,16 @@ public class Anchor {
         sortMatches(matchSet);
         //run modified S&W;
         //TODO: modify S&W
-        SmithWaterman sw = new SmithWaterman("matchesFromS1", "matchesFromS2");
-        sw.getMatches();
+        String s1 = "";
+        String s2 = "";
+        SmithWaterman sw = new SmithWaterman(s1, s2);
+        List<SimpleChaining.Match> matches = sw.getMatches();
+        double bestScore = sw.getAlignmentScore();
+        for (int i = 0; i < matches.size(); i++) {
+            if (matches.get(i).getScore() == bestScore) {
+                return (List<Anchor>) matches.get(i);
+            }
+        }
         return null;
     }
 
@@ -82,6 +91,18 @@ public class Anchor {
         Collections.sort(cleanMatches, new LengthFirstComparator());
         Collections.sort(repeatMatches, new LengthFirstComparator());
         return cleanMatches;
+    }
+
+    public double anchorScore(Anchor a) {
+        double u = a.score;
+        double v = a.length;
+        double w;
+
+        //w = vlogu if u >= 1 and v >= 5
+        // 0 otherwise
+
+        w = v * Math.log(u);
+        return w;
     }
 
     public void anchorSequences(String s) {

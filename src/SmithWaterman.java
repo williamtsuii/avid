@@ -103,7 +103,7 @@ public class SmithWaterman {
      * modified.
      */
     private void buildMatrix() {
-        if (INDEL_SCORE >= 0) {
+        if (INDEL_SCORE < 0) {
             throw new Error("Indel score must be negative");
         }
 
@@ -200,8 +200,6 @@ public class SmithWaterman {
             System.out.println(aligned2);
             System.out.println("");
 
-            // Note: we could check other directions for longer alignments
-            // with the same score. we don't do it here.
             return;
         }
 

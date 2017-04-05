@@ -234,17 +234,17 @@ public class SimpleChaining {
     {
         //bettybitter
         //peterpiper
-	/*   List matches = new ArrayList();
-	   matches.add(new SimpleChaining.Match(1,  2,  1,  2,  2.0)); //"et-et"
-	   matches.add(new SimpleChaining.Match(3, 3, 1, 1, 1.0)); //"e-e"
-	   matches.add(new SimpleChaining.Match(8, 8, 1, 1, 1.0)); //"e-e"
-	   matches.add(new SimpleChaining.Match(2, 2, 7, 7, 1.0)); //"t-t"
-	   matches.add(new SimpleChaining.Match(2, 4, 8, 10, 3.0)); //"ter-ter"
-	   matches.add(new SimpleChaining.Match(8, 9, 9, 10, 2.0)); //"er-er"
-	   matches.add(new SimpleChaining.Match(1, 1, 9, 9, 1.0)); //"e-e"
-	   matches.add(new SimpleChaining.Match(6, 6, 6, 6, 1.0)); //"i-i"
-	   SimpleChaining.chaining(matches, true);
-	   */
+//	   List matches = new ArrayList();
+//	   matches.add(new SimpleChaining.Match(1,  2,  1,  2,  2.0)); //"et-et"
+//	   matches.add(new SimpleChaining.Match(3, 3, 1, 1, 1.0)); //"e-e"
+//	   matches.add(new SimpleChaining.Match(8, 8, 1, 1, 1.0)); //"e-e"
+//	   matches.add(new SimpleChaining.Match(2, 2, 7, 7, 1.0)); //"t-t"
+//	   matches.add(new SimpleChaining.Match(2, 4, 8, 10, 3.0)); //"ter-ter"
+//	   matches.add(new SimpleChaining.Match(8, 9, 9, 10, 2.0)); //"er-er"
+//	   matches.add(new SimpleChaining.Match(1, 1, 9, 9, 1.0)); //"e-e"
+//	   matches.add(new SimpleChaining.Match(6, 6, 6, 6, 1.0)); //"i-i"
+//	   SimpleChaining.chaining(matches, true);
+
         try {
             System.out.println("Compute the local alignments between two strings\n");
 
