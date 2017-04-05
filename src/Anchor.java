@@ -1,3 +1,7 @@
+
+
+import java.util.*;
+
 /**
  * Created by william on 2017-03-29.
  */
@@ -5,18 +9,97 @@ public class Anchor {
     // this class is based on S & W algorithm
     private static int d = 0;
     private static int mismatch = (int) Double.POSITIVE_INFINITY;
+    //1) first sequence involved (2) second sequence involved, (3) start of anchor in first sequence
+    // (4) start of anchor in second sequence (5) length of anchor
+    // (6) score of an anchor point (to prioritize)
+    int s1; //sequence # of first sequence
+    int s2;
+    int s1Start;
+    int s2Start;
+    int length;
+    int score;
     // match is variable
 
-    // TODO: helper func. to remove matches < (longestMatch.length())/2 from init. consideration
-    //this is a heuristic
+    public Anchor(int sequence1, int sequence2) {
+        s1 = sequence1;
+        s2 = sequence2;
+    }
 
-    //TODO: helper func. to order anchor set
+    public List<Anchor> selectAnchors() {
+        //Set? matchSet = MatchFinding.findMatches();
+        List<String> matchSet = new ArrayList<>();
+        eliminateNoisyMatches(matchSet);
+        sortMatches(matchSet);
+        //run modified S&W;
+        //TODO: modify S&W
+        SmithWaterman sw = new SmithWaterman("matchesFromS1", "matchesFromS2");
+        sw.getMatches();
+        return null;
+    }
 
-    //TODO: implement modified S&W alg.
+    private static List eliminateNoisyMatches(List matchSet) {
+        List<String> nextMatchSet = new ArrayList<>();
+        int longestMatchLength = 0;
 
+        for (int i = 0; i < matchSet.size(); i++) {
+            int compareTo = matchSet.get(i).toString().length();
+            if (compareTo > longestMatchLength) {
+                longestMatchLength = compareTo;
+            }
+        }
 
+        for (int i = 0; i < matchSet.size(); i++) {
+            if (matchSet.get(i).toString().length() < (longestMatchLength / 2)) {
+                System.out.println(matchSet.get(i));
+                nextMatchSet.add(matchSet.get(i).toString());
+                matchSet.remove(i);
+                i--;
+            }
+        }
+        return matchSet;
+    }
 
-    public static void main(String[] args) {
+    private static List<String> sortMatches(List matchSet) {
+        //run sequences through repeatMasker
+
+        List<String> cleanMatches = new ArrayList<>();
+        List<String> repeatMatches = new ArrayList<>();
+
+        cleanMatches.add("happy");
+        cleanMatches.add("log");
+        cleanMatches.add("dog");
+        cleanMatches.add("fog");
+        cleanMatches.add("university");
+        cleanMatches.add("matrix");
+        cleanMatches.add("hi");
+        Collections.sort(cleanMatches, new LengthFirstComparator());
+        Collections.sort(repeatMatches, new LengthFirstComparator());
+        return cleanMatches;
+    }
+
+    public void anchorSequences(String s) {
 
     }
+
+    public static class LengthFirstComparator implements Comparator<String> {
+        @Override
+        public int compare(String o1, String o2) {
+            if (o1.length()!=o2.length()) {
+                return o1.length()-o2.length(); //overflow impossible since lengths are non-negative
+            }
+            return o1.compareTo(o2);
+        }
+    }
+
+    public static void main(String[] args) {
+        List<String> matchSet = new ArrayList<>();
+        matchSet.add("hello");
+        matchSet.add("you");
+        matchSet.add("matchstick");
+        matchSet.add("hippopotamus");
+        //System.out.println(eliminateNoisyMatches(matchSet));
+        System.out.println(matchSet);
+        System.out.println(sortMatches(matchSet));
+    }
+
 }

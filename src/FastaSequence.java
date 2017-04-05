@@ -1,34 +1,29 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by william on 2017-03-29.
+ * Created by Gora on 2017-04-03.
  */
-public class Parser {
-    private static String[] description;
-    private static String[] sequence;
-    //this is to parse FASTA files
+public class FastaSequence {
 
-    //constructor
-    public Parser() {
+    private String [] description;
+    private String [] sequence;
+
+    public FastaSequence(String filename)
+    {
+        readSequenceFromFile(filename);
     }
 
-    public static String[] getDescription() {
-        return description;
-    }
-
-    public static String[] getSequence() {
-        return sequence;
-    }
-
-    public static void seqGrep(String file) { //taken from UTexas
+    void readSequenceFromFile(String file)
+    {
         List desc= new ArrayList();
         List seq = new ArrayList();
         try{
-            BufferedReader in     = new BufferedReader(new FileReader(file));
+            BufferedReader in     = new BufferedReader( new FileReader( file ) );
             StringBuffer   buffer = new StringBuffer();
             String         line   = in.readLine();
 
@@ -64,11 +59,37 @@ public class Parser {
             description[i]=(String) desc.get(i);
             sequence[i]=(String) seq.get(i);
         }
+
     }
 
+    //return first sequence as a String
+    public String getSequence(){ return sequence[0];}
 
-    public static void main(String[] args) throws IOException{
-        //seqGrep("./src/Q0VCA5.fasta.txt"); example
+    //return first xdescription as String
+    public String getDescription(){return description[0];}
+
+    //return sequence as a String
+    public String getSequence(int i){ return sequence[i];}
+
+    //return description as String
+    public String getDescription(int i){return description[i];}
+
+    public int size(){return sequence.length;}
+    public static void main(String [] args) throws Exception
+    {
+        String fn ="";
+        if (args.length>0) fn=args[0];
+        else
+        {
+            System.out.print("Enter the name of the FastaFile:");
+            fn = (new BufferedReader(new InputStreamReader(System.in))).readLine();
+        }
+        FastaSequence fsf= new FastaSequence(fn);
+        for (int i=0; i< fsf.size(); i++)
+        {
+            System.out.println("One sequence read from file "+ fn +" with length "+fsf.getSequence().length() );
+            System.out.println("description: \n"+ fsf.getDescription(i));
+            System.out.println("Sequence: \n"+ fsf.getSequence(i));
+        }
     }
-
 }
