@@ -12,24 +12,22 @@ public class Anchor {
     //1) first sequence involved (2) second sequence involved, (3) start of anchor in first sequence
     // (4) start of anchor in second sequence (5) length of anchor
     // (6) score of an anchor point (to prioritize)
-    int s1; //sequence # of first sequence
-    int s2;
-    int s1Start;
-    int s2Start;
+
     int length;
-    int score;
+    double score;
+    SimpleChaining.Match match;  //        int fromA;int fromB;int toA;int toB;double score;
+
     // match is variable
 
-    public Anchor(int sequence1, int sequence2, int s1Start, int s2Start, int score) {
-        s1 = sequence1;
-        s2 = sequence2;
-
+    public Anchor(SimpleChaining.Match match) {
+        length = match.getToA() - match.getFromA();
+        score = match.score;
     }
 
 
     public List<Anchor> selectAnchors() {
         //Set? matchSet = MatchFinding.findMatches();
-        List<String> matchSet = new ArrayList<>();
+        List<String> matchSet = new ArrayList<>();//idk??
         eliminateNoisyMatches(matchSet);
         sortMatches(matchSet);
         //run modified S&W;
