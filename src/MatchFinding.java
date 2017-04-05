@@ -335,7 +335,7 @@ public class MatchFinding extends Parser {
 //
 //        }
 
-        public void subSequence_2(){
+        public String subSequence_2(){
             long startTime = System.currentTimeMillis();
             ArrayList<Edge> listofEdges = new ArrayList<Edge>();
             for (int i = 0; i < HASH_TABLE_SIZE; i++){
@@ -345,9 +345,9 @@ public class MatchFinding extends Parser {
                 }
                 listofEdges.add(s);
             }
-            subSequenceHelper(listofEdges);
-            long endTime = System.currentTimeMillis();
-            System.out.println("TIME:" + (endTime - startTime) + "ms");
+            return(subSequenceHelper(listofEdges));
+//            long endTime = System.currentTimeMillis();
+//            System.out.println("TIME:" + (endTime - startTime) + "ms");
         }
 
         public String getStringFromEdge(Edge e){
@@ -411,6 +411,7 @@ public class MatchFinding extends Parser {
             String builtString = "";
             String tempString = getStringFromEdge(s);
             int currentMax = 0;
+            int longestSoFar = 0;
             ArrayList<Edge> listWithSameStartEnd = new ArrayList<Edge>();
 
             for (int i = 0; i < allEdges.size(); i++) {
@@ -429,7 +430,10 @@ public class MatchFinding extends Parser {
                 if (FS1.contains(tempLongestString) && FS2.contains(tempLongestString)) {
                     longestString = (findLongest(followTheRabbitHole(listWithSameStartEnd.get(i), allEdges)));
                     tempString = getStringFromEdge(s).concat(longestString);
-                    ListOfSubseqs.add(tempString);
+                    if (((double) tempString.length()) > ((double) (longestSoFar/2.0))){
+                        longestSoFar = tempString.length();
+                        ListOfSubseqs.add(tempString);
+                    }
                     if (tempString.length() > builtString.length()) {
                         builtString = tempString;
                         currentMax = builtString.length();
@@ -447,7 +451,7 @@ public class MatchFinding extends Parser {
             else return longestString;
         }
 
-        public void subSequenceHelper(ArrayList<Edge> listOfEdges){
+        public String subSequenceHelper(ArrayList<Edge> listOfEdges){
 //            ArrayList<Edge> newList = new ArrayList<>();
 //            for (Edge e : listOfEdges){
 //                if (Nodes[e.end_node].suffix_node != -1){
@@ -463,59 +467,14 @@ public class MatchFinding extends Parser {
                 Edge s = listOfEdges.get(i);
                 first = getStringFromEdge(s);
 
-//                if (getStringFromEdge(s).length() > longestSoFar.length()) {
-//                    longestSoFar = getStringFromEdge(s);
-//
-//                }
-//                for (int j = i+1; j < newList.size(); j++) {
-//                    if (s.end_node == newList.get(j).start_node) {
-//                        listWithSameStartEnd.add(newList.get(j));
-//                    }
-//                }
-//                if (listWithSameStartEnd.size() == 0){
-//                    continue;
-//                }
-//                ArrayList<Edge> keepTrack = getIndexTrail(listWithSameStartEnd, newList);
-//                temp = buildStringFromIndexes(keepTrack);
-
                 temp = followTheRabbitHole(s, listOfEdges);
                 if (temp.length() > longestSoFar.length()){
                     longestSoFar = temp;
                 }
-//                    for (Edge e : keepTrack){
-
-//                        temp = getStringFromEdge(e);
-//                        System.out.println("this is edge" + e + "string" + temp);
-//                        if (temp.length() > current) {
-//                            current = (longestSoFar.length() + temp.length());
-//                            longestSoFar = first + temp;
-//                        }
-//                    }
-//                longestSoFar = getStringFromEdge(s) + remember;
-
-                listWithSameStartEnd.clear();
+          listWithSameStartEnd.clear();
             }
                 System.out.println(longestSoFar);
-
-//                for (int k = s.first_char_index; k <= s.last_char_index; k++){
-//                    sb.append(T[k]);
-//                }
-//                temp = sb.toString();
-//                if (temp.length() > current){
-//                    current = temp.length();
-//                }
-//                int m = i;
-
-
-
-//                while ((s.end_node == newList.get(m+1).end_node) && ((m+1) <= newList.size())) {
-//                    for (int k = newList.get(m+1).first_char_index; k <= newList.get(m+1).last_char_index; k++){
-//                        sb.append(T[k]);
-//                    }
-//                    temp = sb.toString();
-//
-//                    current = temp.length();
-//                }
+            return longestSoFar;
         }
 
         public void doTraversal(){
@@ -557,50 +516,6 @@ public class MatchFinding extends Parser {
 
         }
 
-//        public void longestSubstring(String str){
-//            char[] holder = new char[HASH_TABLE_SIZE];
-//            int currentLongest = 0;
-//            int count = 0;
-//            String ans = "";
-//            String temp = "";
-//            char[] tempArray = new char[HASH_TABLE_SIZE];
-////            char[] ans = new char[str.length()];
-//            String finalans = "";
-//            for (int i = 0; i < HASH_TABLE_SIZE; i++){
-//                Edge e = Edges[i];
-//                if (e.start_node == -1){
-//                    continue;
-//                }
-//                int top = e.last_char_index;
-//                for (int x = e.first_char_index; x <= top; x++){
-//                    tempArray[ = new String(T[x]);
-//                }
-//
-//
-//                for (int j = 1; j < HASH_TABLE_SIZE; j++){
-//                    if (e.end_node == Edges[j].start_node) {
-//                        if (Nodes[(Edges[j]).end_node].suffix_node == -1) {
-//                            continue;
-//                        }
-//                        int top = e.last_char_index;
-//                        for (int k = e.first_char_index; k <= top; k++){
-//                            System.out.print(T[k]);
-//                        }
-//                        int top2 = Edges[j].last_char_index;
-//                        for (int l = Edges[j].first_char_index; l <= top2; l++){
-//                            System.out.print(T[l]);
-//                        }
-//                        if (holder.length > currentLongest) {
-//                            currentLongest = holder.length;
-//                        }
-//                    }
-//                }
-//
-//            }
-////            finalans = String.valueOf(holder);
-////            System.out.println("BREAK");
-//            System.out.println();
-//        }
 
 
 
@@ -674,6 +589,8 @@ public class MatchFinding extends Parser {
 
         /** Construct Suffix Tree **/
         SuffixTree st = new SuffixTree();
+        String longestAns = "";
+        ArrayList<String> matchesArray = new ArrayList<>();
         st.FS1 = FS1;
         st.FS2 = FS2;
         st.T = str.toCharArray();
@@ -682,9 +599,11 @@ public class MatchFinding extends Parser {
         for (int i = 0 ; i <= st.N ; i++ )
             st.AddPrefix( st.active, i );
         st.dump_edges( st.N );
-        st.subSequence_2();
-
-        System.out.println(st.ListOfSubseqs.toString());
+        longestAns = st.subSequence_2();
+        matchesArray = st.ListOfSubseqs;
+        System.out.println("longestAns is " + longestAns);
+        System.out.println("matchesArray is " + matchesArray);
+        System.out.println(st.ListOfSubseqs.size());
     }
 
 }
