@@ -38,6 +38,36 @@ public class MatchFinding extends Parser {
         }
     }
 
+    static class indexTuple{
+        private String fullString;
+        private int firstIndex;
+        private int secondIndex;
+
+        public indexTuple(String str, int first, int second){
+            fullString = str;
+            firstIndex = first;
+            secondIndex = second;
+        }
+        public String getFullString(){
+            return fullString;
+        }
+        public int getFirstIndex(){
+            return firstIndex;
+        }
+        public int getSecondIndex(){
+            return secondIndex;
+        }
+        public void setFullString(String str){
+            this.fullString = str;
+        }
+        public void setFirstIndex(int first){
+            this.firstIndex = first;
+        }
+        public void setSecondIndex(int second){
+            this.secondIndex = second;
+        }
+    }
+
     /** Class Suffix Tree **/
     static class SuffixTree {
 
@@ -50,6 +80,7 @@ public class MatchFinding extends Parser {
         private Edge[] Edges ;
         private Node[] Nodes ;
         private Suffix active;
+        private ArrayList<indexTuple> listOfIndexes;
         String longestString = "";
         MatchFinding MF = new MatchFinding();
         String FS1;
@@ -253,42 +284,60 @@ public class MatchFinding extends Parser {
         }
         /** Function to print all contents and details of suffix tree **/
         public void dump_edges(int current_n ){
-            BufferedWriter bw = null;
-            FileWriter fw = null;
-            String FILENAME = "out/suffix.txt";
-            try {
-                fw = new FileWriter(FILENAME);
-                bw = new BufferedWriter(fw);
-
-                for ( int j = 0 ; j < HASH_TABLE_SIZE ; j++ )
-                {
-                    Edge s = Edges[j];
-                    if ( s.start_node == -1 )
-                        continue;
-                    bw.write(String.format("%5d %5d %3d %5d %6d   ", s.start_node , s.end_node, Nodes[ s.end_node ].suffix_node, s.first_char_index, s.last_char_index));
-                    int top;
-                    if ( current_n > s.last_char_index )
-                        top = s.last_char_index;
-                    else
-                        top = current_n;
-                    for ( int l = s.first_char_index ; l <= top; l++) {
-                        bw.write(T[l]);
-                    } bw.write("\n");
-                }
-                System.out.println("Done");
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally {
-                try {
-                    if (bw != null)
-                        bw.close();
-                    if (fw != null)
-                        fw.close();
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                }
+            System.out.println(" Start  End  Suf  First Last  String\n");
+            for ( int j = 0 ; j < HASH_TABLE_SIZE ; j++ )
+            {
+                Edge s = Edges[j];
+                if ( s.start_node == -1 )
+                    continue;
+                System.out.printf("%5d %5d %3d %5d %6d   ", s.start_node , s.end_node, Nodes[ s.end_node ].suffix_node, s.first_char_index, s.last_char_index);
+                int top;
+                if ( current_n > s.last_char_index )
+                    top = s.last_char_index;
+                else
+                    top = current_n;
+                for ( int l = s.first_char_index ; l <= top; l++)
+                    System.out.print( T[ l ]);
+                System.out.println();
             }
         }
+//        public void dump_edges(int current_n ){
+//            BufferedWriter bw = null;
+//            FileWriter fw = null;
+//            String FILENAME = "out/suffix.txt";
+//            try {
+//                fw = new FileWriter(FILENAME);
+//                bw = new BufferedWriter(fw);
+//
+//                for ( int j = 0 ; j < HASH_TABLE_SIZE ; j++ )
+//                {
+//                    Edge s = Edges[j];
+//                    if ( s.start_node == -1 )
+//                        continue;
+//                    bw.write(String.format("%5d %5d %3d %5d %6d   ", s.start_node , s.end_node, Nodes[ s.end_node ].suffix_node, s.first_char_index, s.last_char_index));
+//                    int top;
+//                    if ( current_n > s.last_char_index )
+//                        top = s.last_char_index;
+//                    else
+//                        top = current_n;
+//                    for ( int l = s.first_char_index ; l <= top; l++) {
+//                        bw.write(T[l]);
+//                    } bw.write("\n");
+//                }
+//                System.out.println("Done");
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            } finally {
+//                try {
+//                    if (bw != null)
+//                        bw.close();
+//                    if (fw != null)
+//                        fw.close();
+//                } catch (IOException ex) {
+//                    ex.printStackTrace();
+//                }
+//            }
+//        }
 
 //        public void subSequence(){
 //
@@ -355,6 +404,7 @@ public class MatchFinding extends Parser {
             String returnString;
             for (int i = e.first_char_index; i <= e.last_char_index; i++){
                 sb.append(T[i]);
+
             }
             returnString = sb.toString();
             return returnString;
@@ -407,6 +457,12 @@ public class MatchFinding extends Parser {
         // needs to recurse, build the string and remove the edge that we took the string from
         // once empty, compare/keep max string
         //
+
+        public void buildTheTuple(Edge e){
+
+            indexTuple toAdd = new indexTuple(s, first, second);
+            listOfIndexes.add(toAdd);
+        }
         public String followTheRabbitHole(Edge s, ArrayList<Edge> allEdges) {
             String builtString = "";
             String tempString = getStringFromEdge(s);
