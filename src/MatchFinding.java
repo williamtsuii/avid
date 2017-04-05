@@ -454,15 +454,20 @@ public class MatchFinding extends Parser {
             return str;
         }
 
-        // needs to recurse, build the string and remove the edge that we took the string from
-        // once empty, compare/keep max string
-        //
+
+        // helper to build the tuples?
+        // indexTuple class might also need a key of some sort to ensure we're accessing the right one
+        // complexity is getting too high. every time we concatenate two strings with matching
+        // start/end indexes, we would have to update the last_char_index
+        // difficult to do this because of the way we concatenate our strings with matching start/end indexes
+        // upon further thought i think we definitely need a key index of some sort
 
         public void buildTheTuple(Edge e){
 
-            indexTuple toAdd = new indexTuple(s, first, second);
-            listOfIndexes.add(toAdd);
+//            indexTuple toAdd = new indexTuple(s, first, second);
+//            listOfIndexes.add(toAdd);
         }
+
         public String followTheRabbitHole(Edge s, ArrayList<Edge> allEdges) {
             String builtString = "";
             String tempString = getStringFromEdge(s);
