@@ -409,7 +409,7 @@ public class MatchFinding extends Parser {
                     listWithSameStartEnd.add(allEdges.get(i));
                 }
             }
-            if (listWithSameStartEnd.size() == 0){
+            if ((listWithSameStartEnd.size() < 2) && (Nodes[s.end_node].suffix_node != -1)){
                 tempString = getStringFromEdge(s);
                 if (tempString.length() > currentMax){
                     return tempString;
@@ -435,19 +435,19 @@ public class MatchFinding extends Parser {
         }
 
         public void subSequenceHelper(ArrayList<Edge> listOfEdges){
-            ArrayList<Edge> newList = new ArrayList<>();
-            for (Edge e : listOfEdges){
-                if (Nodes[e.end_node].suffix_node != -1){
-                    newList.add(e);
-                }
-            }
+//            ArrayList<Edge> newList = new ArrayList<>();
+//            for (Edge e : listOfEdges){
+//                if (Nodes[e.end_node].suffix_node != -1){
+//                    newList.add(e);
+//                }
+//            }
             String temp = "";
             int current = 0;
             String longestSoFar = "";
             String first = "";
             ArrayList<Edge> listWithSameStartEnd = new ArrayList<>();
-            for (int i = 0; i < newList.size(); i++) {
-                Edge s = newList.get(i);
+            for (int i = 0; i < listOfEdges.size(); i++) {
+                Edge s = listOfEdges.get(i);
                 first = getStringFromEdge(s);
 
 //                if (getStringFromEdge(s).length() > longestSoFar.length()) {
@@ -464,7 +464,7 @@ public class MatchFinding extends Parser {
 //                }
 //                ArrayList<Edge> keepTrack = getIndexTrail(listWithSameStartEnd, newList);
 //                temp = buildStringFromIndexes(keepTrack);
-                temp = followTheRabbitHole(s, newList);
+                temp = followTheRabbitHole(s, listOfEdges);
                 if (temp.length() > longestSoFar.length()){
                     longestSoFar = temp;
                 }
@@ -642,13 +642,15 @@ public class MatchFinding extends Parser {
 //        System.out.println("Enter string\n");
 //        String str = br.readLine();
 //        String str = concatenateSequences(testerOne, testerTwo);
-        String str = "GATTAGA$";
+//        String str = "GATTAGA$";
 //        String str = "pqrpqpqabab$";
 //        String str = "ABABABA$";
 //        String str = "banana$";
 //        String str = "GEEKSFORGEEKS$";
 //        String str = "ATCGATCGA$";
 //        String str = "ACTGGTAGATCAGGTA$";
+
+        String str = "ACTGTAACTGTAAAGCGATACTGATCACTGTCAGTGTGAAAAGTCATCATATGATAAAAGGTGACTACTAGTACTATAAAACT$";
 //        String str = "ACTGTAACTGTAACT$";
         String str = concatenateSequences(FS1A, FS2A).concat("$");
 
