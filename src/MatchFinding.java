@@ -45,6 +45,7 @@ public class MatchFinding extends Parser {
         private Edge[] Edges ;
         private Node[] Nodes ;
         private Suffix active;
+        String longestString = "";
         /** Class Suffix **/
         class Suffix
         {
@@ -330,10 +331,10 @@ public class MatchFinding extends Parser {
 
         // helper function may have to do check first = last, repeat and build the sequences
 
+
+
         public ArrayList<Edge> getIndexTrail(ArrayList<Edge> usefulEdges, ArrayList<Edge> allEdges){
             ArrayList<Edge> toReturn = new ArrayList<>();
-            String str = "";
-            StringBuilder sb = new StringBuilder();
             for (Edge e : allEdges){
                 toReturn.add(e);
             }
@@ -349,7 +350,6 @@ public class MatchFinding extends Parser {
                     }
                 }
             }
-
             for (int i = 0; i < usefulEdges.size(); i++){
                 Edge s = toCheck.get(i);
                 for (int j = 0; j < toReturn.size(); j++){
@@ -373,6 +373,45 @@ public class MatchFinding extends Parser {
             return str;
         }
 
+        // needs to recurse, build the string and remove the edge that we took the string from
+        // once empty, compare/keep max string
+        //
+        public String followTheRabbitHole(Edge s, ArrayList<Edge> allEdges) {
+            String builtString = "";
+            String tempString = getStringFromEdge(s);
+            int currentMax = 0;
+            ArrayList<Edge> listWithSameStartEnd = new ArrayList<Edge>();
+
+            for (int i = 0; i < allEdges.size(); i++) {
+                if (s.end_node == allEdges.get(i).start_node) {
+                    listWithSameStartEnd.add(allEdges.get(i));
+                }
+            }
+            if (listWithSameStartEnd.size() == 0){
+                tempString = getStringFromEdge(s);
+                if (tempString.length() > currentMax){
+                    return tempString;
+                }
+            }
+            for (int i = 0; i < listWithSameStartEnd.size(); i++){
+                longestString = (findLongest(followTheRabbitHole(listWithSameStartEnd.get(i), allEdges)));
+                tempString = getStringFromEdge(s).concat(longestString);
+                if (tempString.length() > builtString.length()){
+                    builtString = tempString;
+                    currentMax = builtString.length();
+                }
+            }
+            longestString = "";
+            return builtString;
+        }
+
+        public String findLongest(String str){
+            if (str.length() > longestString.length()){
+                return str;
+            }
+            else return longestString;
+        }
+
         public void subSequenceHelper(ArrayList<Edge> listOfEdges){
             ArrayList<Edge> newList = new ArrayList<>();
             for (Edge e : listOfEdges){
@@ -380,7 +419,7 @@ public class MatchFinding extends Parser {
                     newList.add(e);
                 }
             }
-            String temp;
+            String temp = "";
             int current = 0;
             String longestSoFar = "";
             String first = "";
@@ -389,28 +428,32 @@ public class MatchFinding extends Parser {
                 Edge s = newList.get(i);
                 first = getStringFromEdge(s);
 
-                if (getStringFromEdge(s).length() > longestSoFar.length()) {
-                    longestSoFar = getStringFromEdge(s);
-
+//                if (getStringFromEdge(s).length() > longestSoFar.length()) {
+//                    longestSoFar = getStringFromEdge(s);
+//
+//                }
+//                for (int j = i+1; j < newList.size(); j++) {
+//                    if (s.end_node == newList.get(j).start_node) {
+//                        listWithSameStartEnd.add(newList.get(j));
+//                    }
+//                }
+//                if (listWithSameStartEnd.size() == 0){
+//                    continue;
+//                }
+//                ArrayList<Edge> keepTrack = getIndexTrail(listWithSameStartEnd, newList);
+//                temp = buildStringFromIndexes(keepTrack);
+                temp = followTheRabbitHole(s, newList);
+                if (temp.length() > longestSoFar.length()){
+                    longestSoFar = temp;
                 }
-                for (int j = i+1; j < newList.size(); j++) {
-                    if (s.end_node == newList.get(j).start_node) {
-                        listWithSameStartEnd.add(newList.get(j));
-                    }
-                }
-                if (listWithSameStartEnd.size() == 0){
-                    continue;
-                }
-                ArrayList<Edge> keepTrack = getIndexTrail(listWithSameStartEnd, newList);
-                temp = buildStringFromIndexes(keepTrack);
 //                    for (Edge e : keepTrack){
 
 //                        temp = getStringFromEdge(e);
 //                        System.out.println("this is edge" + e + "string" + temp);
-                        if (temp.length() > current) {
-                            current = (longestSoFar.length() + temp.length());
-                            longestSoFar = first + temp;
-                        }
+//                        if (temp.length() > current) {
+//                            current = (longestSoFar.length() + temp.length());
+//                            longestSoFar = first + temp;
+//                        }
 //                    }
 //                longestSoFar = getStringFromEdge(s) + remember;
 
@@ -572,13 +615,14 @@ public class MatchFinding extends Parser {
 //        System.out.println("Enter string\n");
 //        String str = br.readLine();
 //        String str = concatenateSequences(testerOne, testerTwo);
-//        String str = "GATTAGA$";
-        String str = "pqrpqpqabab$";
+        String str = "GATTAGA$";
+//        String str = "pqrpqpqabab$";
 //        String str = "ABABABA$";
 //        String str = "banana$";
 //        String str = "GEEKSFORGEEKS$";
 //        String str = "ATCGATCGA$";
 //        String str = "ACTGGTAGATCAGGTA$";
+//        String str = "ACTGTAACTGTAACT$";
         /** Construct Suffix Tree **/
         SuffixTree st = new SuffixTree();
         st.T = str.toCharArray();
