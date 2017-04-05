@@ -25,6 +25,7 @@ public class Anchor {
         s2 = sequence2;
     }
 
+
     public List<Anchor> selectAnchors() {
         //Set? matchSet = MatchFinding.findMatches();
         List<String> matchSet = new ArrayList<>();
@@ -40,6 +41,12 @@ public class Anchor {
     private static List eliminateNoisyMatches(List matchSet) {
         List<String> nextMatchSet = new ArrayList<>();
         int longestMatchLength = 0;
+
+        //REMOVE DUPS
+        Set<String> hs = new HashSet<>();
+        hs.addAll(matchSet);
+        matchSet.clear();
+        matchSet.addAll(hs);
 
         for (int i = 0; i < matchSet.size(); i++) {
             int compareTo = matchSet.get(i).toString().length();

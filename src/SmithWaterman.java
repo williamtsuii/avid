@@ -8,6 +8,8 @@ import java.util.List;
  * Created by Gora on 2017-04-03.
  */
 public class SmithWaterman {
+
+    //modified S&W
     private final double scoreThreshold = 19.9;
 
     /**
@@ -43,8 +45,8 @@ public class SmithWaterman {
      * They are amplified by the normalization factor to be integers.
      */
     static final int MATCH_SCORE = 10;
-    static final int MISMATCH_SCORE = -8;
-    static final int INDEL_SCORE = -9;
+    static final int MISMATCH_SCORE = (int) Double.NEGATIVE_INFINITY;
+    static final int INDEL_SCORE = 0;
 
     /**
      * Constants of directions.
