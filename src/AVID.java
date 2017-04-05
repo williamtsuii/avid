@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 /**
  * Created by william on 2017-04-01.
  */
@@ -200,6 +202,19 @@ public class AVID {
 
     //TODO: If cases to use Anchor Selection / use trivial N&W (without heuristics)
         // use anchors ONLY if anchor set > 50% of length of the sequences aligned
+    public static void useTrivialNW(String seq1, String seq2, ArrayList anchorSet) {
+        String s;
+        if (seq1.length() > seq2.length()) {
+            s = seq2;
+        } else {
+            s = seq1;
+        }
+
+        if (anchorSet.size() > (s.length()/2)) {
+
+        }
+
+    }
 
     public static void main(String args[]) {
         NWAligner("ACATTGTTG", "AATTTTGAGG"); //example
