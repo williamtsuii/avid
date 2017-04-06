@@ -385,7 +385,6 @@ public class MatchFinding extends Parser {
 //        }
 
         public String subSequence_2(){
-            long startTime = System.currentTimeMillis();
             ArrayList<Edge> listofEdges = new ArrayList<Edge>();
             for (int i = 0; i < HASH_TABLE_SIZE; i++){
                 Edge s = Edges[i];
@@ -535,6 +534,7 @@ public class MatchFinding extends Parser {
           listWithSameStartEnd.clear();
             }
                 System.out.println(longestSoFar);
+
             return longestSoFar;
         }
 
@@ -617,6 +617,19 @@ public class MatchFinding extends Parser {
 
     //TODO: maximal matches function
 
+    public static ArrayList<String> returnLongerStrings(ArrayList<String> listToCheck, String longestString, String seqOne, String seqTwo){
+
+         ArrayList<String> shorterList = new ArrayList<String>();
+         for (String s : listToCheck){
+             if (s.length() >= (longestString.length()/2) && !(shorterList.contains(s))){
+                 if (((seqOne.contains(s) && (seqTwo.contains(s))))) {
+                     shorterList.add(s);
+                 }
+             }
+         }
+         return shorterList;
+    }
+
     public static void main(String args[]) throws IOException {
          MatchFinding MF = new MatchFinding();
          SuffixTree SF = new SuffixTree();
@@ -659,11 +672,16 @@ public class MatchFinding extends Parser {
         int x = 0;
         for (int i = 0 ; i <= st.N ; i++ )
             st.AddPrefix( st.active, i );
-        st.dump_edges( st.N );
+//        st.dump_edges( st.N );
+        long startTime = System.currentTimeMillis();
         longestAns = st.subSequence_2();
         matchesArray = st.ListOfSubseqs;
+        long endTime = System.currentTimeMillis();
+        System.out.println("TIME:" + (endTime - startTime) + "ms");
         System.out.println("longestAns is " + longestAns);
-        System.out.println("matchesArray is " + matchesArray);
+        System.out.println("shorter Array is " + returnLongerStrings(matchesArray, longestAns, st.FS1, st.FS2));
+        System.out.println("shorter Array is " + returnLongerStrings(matchesArray, longestAns, st.FS1, st.FS2).size());
+//        System.out.println("matchesArray is " + matchesArray.size());
         System.out.println(st.ListOfSubseqs.size());
     }
 
