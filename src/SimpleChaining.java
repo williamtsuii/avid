@@ -232,8 +232,8 @@ public class SimpleChaining {
     //tester code
     public static void test()
     {
-        //bettybitter
-        //peterpiper
+        //bettybitter = s2
+        //peterpiper = s1
 //	   List matches = new ArrayList();
 //	   matches.add(new SimpleChaining.Match(1,  2,  1,  2,  2.0)); //"et-et"
 //	   matches.add(new SimpleChaining.Match(3, 3, 1, 1, 1.0)); //"e-e"
